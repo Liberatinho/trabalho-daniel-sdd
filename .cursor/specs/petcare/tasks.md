@@ -1,21 +1,21 @@
 # PetCare - Tarefas de Implementação
 
 ## TASK-001: Configuração Inicial do Projeto
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** Todos
 **Descrição:** Configurar estrutura do projeto Spring Boot com Maven, dependências e configurações básicas.
 **Entregáveis:**
-- [ ] pom.xml com todas as dependências
-- [ ] application.yml configurado
-- [ ] PetCareApplication.java criado
-- [ ] .gitignore configurado
+- [X] pom.xml com todas as dependências
+- [X] application.yml configurado
+- [X] PetCareApplication.java criado
+- [X] .gitignore configurado
 
 ## TASK-002: Modelo de Dados - User
 **Status:** Pendente
 **Requisitos:** REQ-001
 **Descrição:** Implementar entidade User com validações e relacionamento com Pet.
 **Entregáveis:**
-- [ ] User.java com anotações JPA
+- [X] User.java com anotações JPA
 - [ ] Validações com Bean Validation
 - [ ] Métodos addPet() e removePet()
 
