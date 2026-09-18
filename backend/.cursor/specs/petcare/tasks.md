@@ -24,7 +24,7 @@
 **Requisitos:** REQ-002
 **Descrição:** Implementar entidade Pet com relacionamentos e validações.
 **Entregáveis:**
-- [X] Pet.java com todas as propriedades
+- [ ] Pet.java com todas as propriedades
 - [X] Relacionamento ManyToOne com User
 - [X] Relacionamentos OneToMany com Vaccine, Consultation, Reminder
 
