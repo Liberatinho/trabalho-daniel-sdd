@@ -16,17 +16,17 @@
 **Descrição:** Implementar entidade User com validações e relacionamento com Pet.
 **Entregáveis:**
 - [X] User.java com anotações JPA
-- [ ] Validações com Bean Validation
-- [ ] Métodos addPet() e removePet()
+- [X] Validações com Bean Validation
+- [X] Métodos addPet() e removePet()
 
 ## TASK-003: Modelo de Dados - Pet
 **Status:** Pendente
 **Requisitos:** REQ-002
 **Descrição:** Implementar entidade Pet com relacionamentos e validações.
 **Entregáveis:**
-- [ ] Pet.java com todas as propriedades
-- [ ] Relacionamento ManyToOne com User
-- [ ] Relacionamentos OneToMany com Vaccine, Consultation, Reminder
+- [X] Pet.java com todas as propriedades
+- [X] Relacionamento ManyToOne com User
+- [X] Relacionamentos OneToMany com Vaccine, Consultation, Reminder
 
 ## TASK-004: Modelo de Dados - Vaccine
 **Status:** Pendente

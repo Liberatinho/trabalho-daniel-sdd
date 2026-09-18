@@ -121,16 +121,16 @@ PetCare/
 22. Preparar apresentação (6 tópicos do guia)
 
 ## Critérios de Aceite (Checklist do Trabalho)
-- [ ] Problema claramente definido
-- [ ] Pelo menos 3 funcionalidades relevantes (temos 5)
-- [ ] Persistência de dados (H2 + JPA)
-- [ ] Regras de negócio (6 regras identificadas)
-- [ ] Validações (Bean Validation)
+- [X] Problema claramente definido
+- [X] Pelo menos 3 funcionalidades relevantes (temos 5)
+- [X] Persistência de dados (H2 + JPA)
+- [X] Regras de negócio (6 regras identificadas)
+- [X] Validações (Bean Validation)
 - [ ] Aplicação funcional
 - [ ] Artefatos do cc-sdd preservados (brief, requirements, design, tasks)
 - [ ] Requirements documentados
 - [ ] Design documentado
-- [ ] Tasks documentadas
+- [X] Tasks documentadas
 - [ ] Testes e registros de verificação preservados
 - [ ] Histórico Git coerente com as tasks
 - [ ] Commits relacionados às tarefas/requisitos
@@ -138,7 +138,7 @@ PetCare/
 - [ ] Slides cobrindo os 6 tópicos
 - [ ] Demonstração da aplicação
 - [ ] Análise crítica
-- [ ] Link do repositório
+- [X] Link do repositório
 
 ## Estratégia de Commits
 Cada commit deve seguir o padrão:
