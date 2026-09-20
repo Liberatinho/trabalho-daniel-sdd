@@ -29,13 +29,13 @@
 - [X] Relacionamentos OneToMany com Vaccine, Consultation, Reminder
 
 ## TASK-004: Modelo de Dados - Vaccine
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-003
 **Descrição:** Implementar entidade Vaccine com validações.
 **Entregáveis:**
-- [ ] Vaccine.java com todas as propriedades
-- [ ] Relacionamento ManyToOne com Pet
-- [ ] Validações de campos obrigatórios
+- [X] Vaccine.java com todas as propriedades
+- [X] Relacionamento ManyToOne com Pet
+- [X] Validações de campos obrigatórios
 
 ## TASK-005: Modelo de Dados - Consultation
 **Status:** Concluído
@@ -62,7 +62,7 @@
 **Entregáveis:**
 - [ ] UserRepository com findByEmail() e existsByEmail()
 - [ ] PetRepository com findByUserId() e existsByIdAndUserId()
-- [ ] VaccineRepository com findByPetId() e existsByIdAndPetId()
+- [X] VaccineRepository com findByPetId() e existsByIdAndPetId()
 - [ ] ConsultationRepository com métodos customizados
 - [ ] ReminderRepository com métodos de filtro
 
@@ -85,13 +85,13 @@
 - [ ] Associação automática com usuário
 
 ## TASK-010: VaccineService
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-003
 **Descrição:** Implementar camada de serviço para Vaccine com validações.
 **Entregáveis:**
-- [ ] CRUD completo de vacinas
-- [ ] Validação de ownership
-- [ ] Validação de próxima dose (não pode ser anterior à aplicação)
+- [X] CRUD completo de vacinas
+- [X] Validação de ownership
+- [X] Validação de próxima dose (não pode ser anterior à aplicação)
 
 ## TASK-011: ConsultationService
 **Status:** Concluído
@@ -137,15 +137,15 @@
 - [ ] DELETE /api/users/{userId}/pets/{id}
 
 ## TASK-015: VaccineController
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-003
 **Descrição:** Implementar controller REST para Vaccine com endpoints aninhados.
 **Entregáveis:**
-- [ ] POST /api/users/{userId}/pets/{petId}/vaccines
-- [ ] GET /api/users/{userId}/pets/{petId}/vaccines/{id}
-- [ ] GET /api/users/{userId}/pets/{petId}/vaccines
-- [ ] PUT /api/users/{userId}/pets/{petId}/vaccines/{id}
-- [ ] DELETE /api/users/{userId}/pets/{petId}/vaccines/{id}
+- [X] POST /api/users/{userId}/pets/{petId}/vaccines
+- [X] GET /api/users/{userId}/pets/{petId}/vaccines/{id}
+- [X] GET /api/users/{userId}/pets/{petId}/vaccines
+- [X] PUT /api/users/{userId}/pets/{petId}/vaccines/{id}
+- [X] DELETE /api/users/{userId}/pets/{petId}/vaccines/{id}
 
 ## TASK-016: ConsultationController
 **Status:** Concluído
@@ -209,7 +209,7 @@
 **Entregáveis:**
 - [X] UserServiceTest
 - [ ] PetServiceTest
-- [ ] VaccineServiceTest
+- [X] VaccineServiceTest
 - [X] ConsultationServiceTest
 - [ ] ReminderServiceTest
 
@@ -220,7 +220,7 @@
 **Entregáveis:**
 - [X] UserControllerTest
 - [ ] PetControllerTest
-- [ ] VaccineControllerTest
+- [X] VaccineControllerTest
 - [X] ConsultationControllerTest
 - [ ] ReminderControllerTest
 
