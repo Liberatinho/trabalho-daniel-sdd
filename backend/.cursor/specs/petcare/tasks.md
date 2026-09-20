@@ -47,13 +47,13 @@
 - [X] Relacionamento ManyToOne com Pet
 
 ## TASK-006: Modelo de Dados - Reminder
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-005
 **Descrição:** Implementar entidade Reminder com enum de tipo.
 **Entregáveis:**
-- [ ] Reminder.java com todas as propriedades
-- [ ] ReminderType enum (VACCINE, CONSULTATION, MEDICATION, OTHER)
-- [ ] Relacionamento ManyToOne com Pet
+- [X] Reminder.java com todas as propriedades
+- [X] ReminderType enum (VACCINE, CONSULTATION, MEDICATION, OTHER)
+- [X] Relacionamento ManyToOne com Pet
 
 ## TASK-007: Repositórios JPA
 **Status:** Pendente
@@ -63,8 +63,8 @@
 - [ ] UserRepository com findByEmail() e existsByEmail()
 - [ ] PetRepository com findByUserId() e existsByIdAndUserId()
 - [X] VaccineRepository com findByPetId() e existsByIdAndPetId()
-- [ ] ConsultationRepository com métodos customizados
-- [ ] ReminderRepository com métodos de filtro
+- [X] ConsultationRepository com métodos customizados
+- [X] ReminderRepository com métodos de filtro
 
 ## TASK-008: UserService
 **Status:** Pendente
@@ -105,13 +105,13 @@
 - [X] Consulta realizada não pode voltar para agendada
 
 ## TASK-012: ReminderService
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-005
 **Descrição:** Implementar camada de serviço para Reminder com filtros.
 **Entregáveis:**
-- [ ] CRUD completo de lembretes
-- [ ] Validação de ownership
-- [ ] Filtros por tipo e status de conclusão
+- [X] CRUD completo de lembretes
+- [X] Validação de ownership
+- [X] Filtros por tipo e status de conclusão
 
 ## TASK-013: UserController
 **Status:** Pendente
@@ -159,15 +159,15 @@
 - [X] DELETE /api/users/{userId}/pets/{petId}/consultations/{id}
 
 ## TASK-017: ReminderController
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-005
 **Descrição:** Implementar controller REST para Reminder com filtros.
 **Entregáveis:**
-- [ ] POST /api/users/{userId}/pets/{petId}/reminders
-- [ ] GET /api/users/{userId}/pets/{petId}/reminders/{id}
-- [ ] GET /api/users/{userId}/pets/{petId}/reminders (com filtros opcionais por tipo e completed)
-- [ ] PUT /api/users/{userId}/pets/{petId}/reminders/{id}
-- [ ] DELETE /api/users/{userId}/pets/{petId}/reminders/{id}
+- [X] POST /api/users/{userId}/pets/{petId}/reminders
+- [X] GET /api/users/{userId}/pets/{petId}/reminders/{id}
+- [X] GET /api/users/{userId}/pets/{petId}/reminders (com filtros opcionais por tipo e completed)
+- [X] PUT /api/users/{userId}/pets/{petId}/reminders/{id}
+- [X] DELETE /api/users/{userId}/pets/{petId}/reminders/{id}
 
 ## TASK-018: GlobalExceptionHandler
 **Status:** Concluído
@@ -211,7 +211,7 @@
 - [ ] PetServiceTest
 - [X] VaccineServiceTest
 - [X] ConsultationServiceTest
-- [ ] ReminderServiceTest
+- [X] ReminderServiceTest
 
 ## TASK-022: Testes de Integração - Controllers
 **Status:** ⏳ Pendente
@@ -222,7 +222,7 @@
 - [ ] PetControllerTest
 - [X] VaccineControllerTest
 - [X] ConsultationControllerTest
-- [ ] ReminderControllerTest
+- [X] ReminderControllerTest
 
 ## TASK-023: Commit e Documentação Final
 **Status:** ⏳ Pendente
