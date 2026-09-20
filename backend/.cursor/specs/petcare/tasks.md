@@ -38,13 +38,13 @@
 - [ ] Validações de campos obrigatórios
 
 ## TASK-005: Modelo de Dados - Consultation
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-004
 **Descrição:** Implementar entidade Consultation com enum de status.
 **Entregáveis:**
-- [ ] Consultation.java com todas as propriedades
-- [ ] ConsultationStatus enum (SCHEDULED, COMPLETED, CANCELLED)
-- [ ] Relacionamento ManyToOne com Pet
+- [X] Consultation.java com todas as propriedades
+- [X] ConsultationStatus enum (SCHEDULED, COMPLETED, CANCELLED)
+- [X] Relacionamento ManyToOne com Pet
 
 ## TASK-006: Modelo de Dados - Reminder
 **Status:** Pendente
@@ -94,15 +94,15 @@
 - [ ] Validação de próxima dose (não pode ser anterior à aplicação)
 
 ## TASK-011: ConsultationService
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-004
 **Descrição:** Implementar camada de serviço para Consultation com validação de transição de status.
 **Entregáveis:**
-- [ ] CRUD completo de consultas
-- [ ] Validação de ownership
-- [ ] Validação de transição de status
-- [ ] Consulta cancelada não pode ser alterada
-- [ ] Consulta realizada não pode voltar para agendada
+- [X] CRUD completo de consultas
+- [X] Validação de ownership
+- [X] Validação de transição de status
+- [X] Consulta cancelada não pode ser alterada
+- [X] Consulta realizada não pode voltar para agendada
 
 ## TASK-012: ReminderService
 **Status:** Pendente
@@ -148,15 +148,15 @@
 - [ ] DELETE /api/users/{userId}/pets/{petId}/vaccines/{id}
 
 ## TASK-016: ConsultationController
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-004
 **Descrição:** Implementar controller REST para Consultation com filtro por status.
 **Entregáveis:**
-- [ ] POST /api/users/{userId}/pets/{petId}/consultations
-- [ ] GET /api/users/{userId}/pets/{petId}/consultations/{id}
-- [ ] GET /api/users/{userId}/pets/{petId}/consultations (com filtro opcional por status)
-- [ ] PUT /api/users/{userId}/pets/{petId}/consultations/{id}
-- [ ] DELETE /api/users/{userId}/pets/{petId}/consultations/{id}
+- [X] POST /api/users/{userId}/pets/{petId}/consultations
+- [X] GET /api/users/{userId}/pets/{petId}/consultations/{id}
+- [X] GET /api/users/{userId}/pets/{petId}/consultations (com filtro opcional por status)
+- [X] PUT /api/users/{userId}/pets/{petId}/consultations/{id}
+- [X] DELETE /api/users/{userId}/pets/{petId}/consultations/{id}
 
 ## TASK-017: ReminderController
 **Status:** Pendente
@@ -170,15 +170,15 @@
 - [ ] DELETE /api/users/{userId}/pets/{petId}/reminders/{id}
 
 ## TASK-018: GlobalExceptionHandler
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-007
 **Descrição:** Implementar tratamento global de exceções com @RestControllerAdvice.
 **Entregáveis:**
-- [ ] Tratamento de EntityNotFoundException (404)
-- [ ] Tratamento de SecurityException (403)
-- [ ] Tratamento de IllegalArgumentException (400)
-- [ ] Tratamento de MethodArgumentNotValidException (400)
-- [ ] Tratamento de exceções genéricas (500)
+- [X] Tratamento de EntityNotFoundException (404)
+- [X] Tratamento de SecurityException (403)
+- [X] Tratamento de IllegalArgumentException (400)
+- [X] Tratamento de MethodArgumentNotValidException (400)
+- [X] Tratamento de exceções genéricas (500)
 
 ## TASK-019: DataInitializer
 **Status:** Pendente
@@ -207,10 +207,10 @@
 **Requisitos:** Todos
 **Descrição:** Implementar testes unitários para todas as camadas de serviço.
 **Entregáveis:**
-- [ ] UserServiceTest
+- [X] UserServiceTest
 - [ ] PetServiceTest
 - [ ] VaccineServiceTest
-- [ ] ConsultationServiceTest
+- [X] ConsultationServiceTest
 - [ ] ReminderServiceTest
 
 ## TASK-022: Testes de Integração - Controllers
@@ -218,10 +218,10 @@
 **Requisitos:** Todos
 **Descrição:** Implementar testes de integração para todos os controllers.
 **Entregáveis:**
-- [ ] UserControllerTest
+- [X] UserControllerTest
 - [ ] PetControllerTest
 - [ ] VaccineControllerTest
-- [ ] ConsultationControllerTest
+- [X] ConsultationControllerTest
 - [ ] ReminderControllerTest
 
 ## TASK-023: Commit e Documentação Final
