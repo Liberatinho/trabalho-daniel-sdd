@@ -2,7 +2,7 @@
 
 > Status atual (não reimplementar o que já está Concluído):
 > User, Pet, Vaccine, Consultation, Reminder, repositórios, services, controllers e GlobalExceptionHandler já estão feitos.
-> Ainda pendente: TASK-019 (DataInitializer), testes de Pet (TASK-021/022) e TASK-023 (docs finais da apresentação).
+> Ainda pendente: testes de Pet (TASK-021/022) e TASK-023 (docs finais da apresentação).
 
 ## TASK-001: Configuração Inicial do Projeto
 **Status:** Concluído
@@ -185,15 +185,15 @@
 - [X] Tratamento de exceções genéricas (500)
 
 ## TASK-019: DataInitializer
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-006
 **Descrição:** Implementar carga de dados de exemplo na inicialização.
 **Entregáveis:**
-- [ ] 2 usuários de exemplo
-- [ ] 3 pets associados aos usuários
-- [ ] 3 vacinas associadas aos pets
-- [ ] 3 consultas com diferentes status
-- [ ] 3 lembretes com diferentes tipos
+- [X] 2 usuários de exemplo
+- [X] 3 pets associados aos usuários
+- [X] 3 vacinas associadas aos pets
+- [X] 3 consultas com diferentes status
+- [X] 3 lembretes com diferentes tipos
 
 ## TASK-020: Documentação e Configuração Final
 **Status:** Concluído
