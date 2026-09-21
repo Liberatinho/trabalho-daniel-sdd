@@ -48,7 +48,10 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(testUser)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("João Silva"))
+                .andExpect(jsonPath("$.cpf").value("12345678901"))
+                .andExpect(jsonPath("$.cidade").value("São Paulo"))
                 .andExpect(jsonPath("$.email").value("joao@email.com"));
+                .andExpect(jsonPath("$.password").value("senha123"));
 
         verify(userService, times(1)).createUser(any(User.class));
     }
@@ -60,7 +63,10 @@ class UserControllerTest {
         mockMvc.perform(get("/api/users/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("João Silva"))
-                .andExpect(jsonPath("$.email").value("joao@email.com"));
+                .andExpect(jsonPath("$.email").value("joao@email.com"))
+                .andExpect(jsonPath("$.cpf").value("12345678901"))
+                .andExpect(jsonPath("$.cidade").value("São Paulo"))
+                .andExpect(jsonPath("$.password").value("senha123"));
     }
 
     @Test
@@ -69,7 +75,20 @@ class UserControllerTest {
 
         mockMvc.perform(get("/api/users/email/joao@email.com"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value("joao@email.com"));
+                .andExpect(jsonPath("$.email").value("joao@email.com"))
+                .andExpect(jsonPath("$.cpf").value("12345678901"))
+                .andExpect(jsonPath("$.cidade").value("São Paulo"))
+                .andExpect(jsonPath("$.password").value("senha123"));
+    }
+    @Test
+    void getUserByCpf_Success() throws Exception {
+        when(userService.getUserByCpf("12345678901")).thenReturn(testUser);
+
+        mockMvc.perform(get("/api/users/cpf/12345678901"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.cpf").value("12345678901"))
+                .andExpect(jsonPath("$.cidade").value("São Paulo"))
+                .andExpect(jsonPath("$.password").value("senha123"));
     }
 
     @Test

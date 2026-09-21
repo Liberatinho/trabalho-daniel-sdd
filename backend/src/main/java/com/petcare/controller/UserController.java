@@ -37,6 +37,12 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<User> getUserByCpf(@PathVariable String cpf) {
+        User user = userService.getUserByCpf(cpf);
+        return ResponseEntity.ok(user);
+    }
+
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();

@@ -39,6 +39,7 @@ class UserServiceTest {
     @Test
     void createUser_Success() {
         when(userRepository.existsByEmail(anyString())).thenReturn(false);
+        when(userRepository.existsByCpf("12345678901")).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
 
         User result = userService.createUser(testUser);
@@ -46,6 +47,9 @@ class UserServiceTest {
         assertNotNull(result);
         assertEquals("João Silva", result.getName());
         assertEquals("joao@email.com", result.getEmail());
+        assertEquals("12345678901", result.getCpf());
+        assertEquals("São Paulo", result.getCidade());
+        assertEquals("senha123", result.getPassword());
         verify(userRepository, times(1)).save(testUser);
     }
 
@@ -103,23 +107,44 @@ class UserServiceTest {
 
         assertEquals("Usuário não encontrado: naoexiste@email.com", exception.getMessage());
     }
+    @Test
+    void getUserByCpf_Success() {
+        when(userRepository.findByCpf("12345678901")).thenReturn(Optional.of(testUser));
 
+        User result = userService.getUserByCpf("12345678901");
+
+        assertNotNull(result);
+        assertEquals("12345678901", result.getCpf());
+        assertEquals("São Paulo", result.getCidade());
+        assertEquals("senha123", result.getPassword());
+    }
+    @Test
+    void getUserByCpf_NotFound_ThrowsException() {
+        when(userRepository.findByCpf("12345678901")).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
+            userService.getUserByCpf("12345678901");
+        });
+    }
+        assertEquals("Usuário não encontrado: 12345678901", exception.getMessage());
+    }
     @Test
     void getAllUsers_Success() {
-        User user2 = new User("Maria Santos", "maria@email.com", "senha456");
+        User user2 = new User("Maria Santos", "maria@email.com", "12345678902", "São Paulo", "senha456");
         user2.setId(2L);
 
         when(userRepository.findAll()).thenReturn(Arrays.asList(testUser, user2));
 
         List<User> result = userService.getAllUsers();
-
         assertNotNull(result);
         assertEquals(2, result.size());
+        assertEquals("João Silva", result.get(0).getName());
+        assertEquals("Maria Santos", result.get(1).getName());
     }
 
     @Test
     void updateUser_Success() {
-        User updatedData = new User("João Silva Atualizado", "joao@email.com", "novaSenha");
+        User updatedData = new User("João Silva Atualizado", "joao@email.com", "12345678901", "São Paulo", "novaSenha");
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.save(any(User.class))).thenReturn(testUser);
@@ -129,6 +154,8 @@ class UserServiceTest {
         assertNotNull(result);
         assertEquals("João Silva Atualizado", result.getName());
         assertEquals("novaSenha", result.getPassword());
+        assertEquals("12345678901", result.getCpf());
+        assertEquals("São Paulo", result.getCidade());
     }
 
     @Test
@@ -139,4 +166,3 @@ class UserServiceTest {
         assertDoesNotThrow(() -> userService.deleteUser(1L));
         verify(userRepository, times(1)).delete(testUser);
     }
-}

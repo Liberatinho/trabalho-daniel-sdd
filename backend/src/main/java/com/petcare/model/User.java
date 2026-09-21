@@ -2,7 +2,9 @@ package com.petcare.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.CPF;
 import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Hash;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +24,16 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    @NotBlank(message = "CPF é obrigatório")
+    @CPF(message = "CPF deve ser válido")
+    @Column(unique = true)
+    private String cpf;
+
+    @NotBlank(message = "Cidade é obrigatória")
+    private String cidade;
+
     @NotBlank(message = "Senha é obrigatória")
+    @Hash(message = "Senha deve ser válida")
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -30,9 +41,11 @@ public class User {
 
     public User() {}
 
-    public User(String name, String email, String password) {
+    public User(String name, String email, String cpf, String cidade, String password) {
         this.name = name;
         this.email = email;
+        this.cpf = cpf;
+        this.cidade = cidade;
         this.password = password;
     }
 
@@ -47,6 +60,12 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
+
+    public String getCidade() { return cidade; }
+    public void setCidade(String cidade) { this.cidade = cidade; }
 
     public List<Pet> getPets() { return pets; }
     public void setPets(List<Pet> pets) { this.pets = pets; }

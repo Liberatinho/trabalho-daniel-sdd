@@ -38,6 +38,12 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public User getUserByCpf(String cpf) {
+        return userRepository.findByCpf(cpf)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado: " + cpf));
+    }
+
+    @Transactional(readOnly = true)
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -46,6 +52,8 @@ public class UserService {
         User user = getUserById(id);
         user.setName(userDetails.getName());
         user.setEmail(userDetails.getEmail());
+        user.setCpf(userDetails.getCpf());
+        user.setCidade(userDetails.getCidade());
         if (userDetails.getPassword() != null && !userDetails.getPassword().isBlank()) {
             user.setPassword(userDetails.getPassword());
         }
