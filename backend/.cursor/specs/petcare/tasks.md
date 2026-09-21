@@ -1,5 +1,9 @@
 # PetCare - Tarefas de Implementação
 
+> Status atual (não reimplementar o que já está Concluído):
+> User, Pet, Vaccine, Consultation, Reminder, repositórios, services, controllers e GlobalExceptionHandler já estão feitos.
+> Ainda pendente: TASK-019 (DataInitializer), testes de Pet (TASK-021/022) e TASK-023 (docs finais da apresentação).
+
 ## TASK-001: Configuração Inicial do Projeto
 **Status:** Concluído
 **Requisitos:** Todos
@@ -11,7 +15,7 @@
 - [X] .gitignore configurado
 
 ## TASK-002: Modelo de Dados - User
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-001
 **Descrição:** Implementar entidade User com validações e relacionamento com Pet.
 **Entregáveis:**
@@ -20,11 +24,11 @@
 - [X] Métodos addPet() e removePet()
 
 ## TASK-003: Modelo de Dados - Pet
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-002
 **Descrição:** Implementar entidade Pet com relacionamentos e validações.
 **Entregáveis:**
-- [ ] Pet.java com todas as propriedades
+- [X] Pet.java com todas as propriedades
 - [X] Relacionamento ManyToOne com User
 - [X] Relacionamentos OneToMany com Vaccine, Consultation, Reminder
 
@@ -56,33 +60,33 @@
 - [X] Relacionamento ManyToOne com Pet
 
 ## TASK-007: Repositórios JPA
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-006
 **Descrição:** Implementar interfaces de repositório para todas as entidades.
 **Entregáveis:**
-- [ ] UserRepository com findByEmail() e existsByEmail()
-- [ ] PetRepository com findByUserId() e existsByIdAndUserId()
+- [X] UserRepository com findByEmail() e existsByEmail()
+- [X] PetRepository com findByUserId() e existsByIdAndUserId()
 - [X] VaccineRepository com findByPetId() e existsByIdAndPetId()
 - [X] ConsultationRepository com métodos customizados
 - [X] ReminderRepository com métodos de filtro
 
 ## TASK-008: UserService
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-001
 **Descrição:** Implementar camada de serviço para User com regras de negócio.
 **Entregáveis:**
-- [ ] CRUD completo de usuários
-- [ ] Validação de email único
-- [ ] Tratamento de EntityNotFoundException
+- [X] CRUD completo de usuários
+- [X] Validação de email único
+- [X] Tratamento de EntityNotFoundException
 
 ## TASK-009: PetService
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-002
 **Descrição:** Implementar camada de serviço para Pet com validação de ownership.
 **Entregáveis:**
-- [ ] CRUD completo de pets
-- [ ] Validação de ownership (getPetByIdAndUser)
-- [ ] Associação automática com usuário
+- [X] CRUD completo de pets
+- [X] Validação de ownership (getPetByIdAndUser)
+- [X] Associação automática com usuário
 
 ## TASK-010: VaccineService
 **Status:** Concluído
@@ -114,27 +118,27 @@
 - [X] Filtros por tipo e status de conclusão
 
 ## TASK-013: UserController
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-001
 **Descrição:** Implementar controller REST para User.
 **Entregáveis:**
-- [ ] POST /api/users
-- [ ] GET /api/users/{id}
-- [ ] GET /api/users/email/{email}
-- [ ] GET /api/users
-- [ ] PUT /api/users/{id}
-- [ ] DELETE /api/users/{id}
+- [X] POST /api/users
+- [X] GET /api/users/{id}
+- [X] GET /api/users/email/{email}
+- [X] GET /api/users
+- [X] PUT /api/users/{id}
+- [X] DELETE /api/users/{id}
 
 ## TASK-014: PetController
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-002
 **Descrição:** Implementar controller REST para Pet com endpoints aninhados.
 **Entregáveis:**
-- [ ] POST /api/users/{userId}/pets
-- [ ] GET /api/users/{userId}/pets/{id}
-- [ ] GET /api/users/{userId}/pets
-- [ ] PUT /api/users/{userId}/pets/{id}
-- [ ] DELETE /api/users/{userId}/pets/{id}
+- [X] POST /api/users/{userId}/pets
+- [X] GET /api/users/{userId}/pets/{id}
+- [X] GET /api/users/{userId}/pets
+- [X] PUT /api/users/{userId}/pets/{id}
+- [X] DELETE /api/users/{userId}/pets/{id}
 
 ## TASK-015: VaccineController
 **Status:** Concluído
@@ -192,15 +196,15 @@
 - [ ] 3 lembretes com diferentes tipos
 
 ## TASK-020: Documentação e Configuração Final
-**Status:** Pendente
+**Status:** Concluído
 **Requisitos:** REQ-008
 **Descrição:** Configurar Swagger/OpenAPI e preparar projeto para execução.
 **Entregáveis:**
-- [ ] springdoc-openapi-starter-webmvc-ui adicionado
-- [ ] Configuração do Swagger em application.yml
-- [ ] PLANO.md com visão geral do projeto
-- [ ] .gitignore configurado
-- [ ] Projeto inicializado no Git
+- [X] springdoc-openapi-starter-webmvc-ui adicionado
+- [X] Configuração do Swagger em application.yml
+- [X] PLANO.md com visão geral do projeto
+- [X] .gitignore configurado
+- [X] Projeto inicializado no Git
 
 ## TASK-021: Testes Unitários - Services
 **Status:** ⏳ Pendente
