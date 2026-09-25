@@ -15,6 +15,11 @@ export const routes: Routes = [
     component: AuthLayoutComponent,
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'login'
+      },
+      {
         path: 'login',
         component: LoginComponent,
         data: { layout: 'authentication' }
