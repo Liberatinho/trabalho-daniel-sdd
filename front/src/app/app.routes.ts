@@ -4,6 +4,7 @@ import { authGuard } from './core/routing/auth.guard';
 import { RoutePlaceholderComponent } from './core/routing/route-placeholder.component';
 import { AuthLayoutComponent } from './components/layouts/auth-layout/auth-layout.component';
 import { LoginComponent } from './pages/login/login.component';
+import { RegisterComponent } from './pages/register/register.component';
 
 export const routes: Routes = [
   {
@@ -17,7 +18,7 @@ export const routes: Routes = [
       },
       {
         path: 'register',
-        component: RoutePlaceholderComponent,
+        component: RegisterComponent,
         data: { layout: 'authentication' }
       }
     ]
