@@ -1,0 +1,11 @@
+.avatar {
+  display: inline-grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--color-brand-soft);
+  color: var(--color-brand-primary);
+  font-weight: 800;
+  line-height: 1;
+}
