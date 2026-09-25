@@ -2,17 +2,24 @@ import { Routes } from '@angular/router';
 
 import { authGuard } from './core/routing/auth.guard';
 import { RoutePlaceholderComponent } from './core/routing/route-placeholder.component';
+import { AuthLayoutComponent } from './components/layouts/auth-layout/auth-layout.component';
 
 export const routes: Routes = [
   {
-    path: 'login',
-    component: RoutePlaceholderComponent,
-    data: { layout: 'authentication' }
-  },
-  {
-    path: 'register',
-    component: RoutePlaceholderComponent,
-    data: { layout: 'authentication' }
+    path: '',
+    component: AuthLayoutComponent,
+    children: [
+      {
+        path: 'login',
+        component: RoutePlaceholderComponent,
+        data: { layout: 'authentication' }
+      },
+      {
+        path: 'register',
+        component: RoutePlaceholderComponent,
+        data: { layout: 'authentication' }
+      }
+    ]
   },
   {
     path: '',

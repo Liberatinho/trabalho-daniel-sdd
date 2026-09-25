@@ -1,0 +1,120 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+.auth-layout {
+  display: grid;
+  min-height: 100dvh;
+  grid-template-columns: minmax(18rem, 0.9fr) minmax(24rem, 1.1fr);
+  background: var(--color-background-page);
+}
+
+.auth-layout__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  padding: clamp(var(--space-8), 8vw, var(--space-12));
+  background: var(--color-brand-primary);
+  color: var(--color-text-on-primary);
+}
+
+.auth-layout__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 1.375rem;
+  font-weight: 800;
+}
+
+.auth-layout__brand-mark {
+  display: inline-grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: rgb(255 255 255 / 16%);
+}
+
+.auth-layout__message {
+  display: grid;
+  align-content: center;
+  gap: var(--space-4);
+  max-width: 30rem;
+  margin: auto 0;
+}
+
+.auth-layout__eyebrow {
+  color: #9ed8ce;
+  font-size: var(--font-size-label);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.auth-layout__message h1 {
+  color: var(--color-text-on-primary);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: var(--line-height-tight);
+}
+
+.auth-layout__message p {
+  color: rgb(255 255 255 / 76%);
+  font-size: 1.0625rem;
+}
+
+.auth-layout__dots {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.auth-layout__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radius-full);
+  background: rgb(255 255 255 / 32%);
+}
+
+.auth-layout__dot--active {
+  width: 1.5rem;
+  background: var(--color-brand-secondary);
+}
+
+.auth-layout__content {
+  display: grid;
+  min-width: 0;
+  place-items: center;
+  padding: clamp(var(--space-6), 6vw, var(--space-12));
+}
+
+.auth-layout__card {
+  width: min(100%, 32rem);
+  padding: clamp(var(--space-6), 5vw, var(--space-10));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-background-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+@media (max-width: 52rem) {
+  .auth-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-layout__panel {
+    min-height: 16rem;
+    padding: var(--space-8) var(--space-6);
+  }
+
+  .auth-layout__message {
+    margin: 0;
+  }
+
+  .auth-layout__message h1 {
+    font-size: 2rem;
+  }
+
+  .auth-layout__content {
+    padding: var(--space-6);
+  }
+}
