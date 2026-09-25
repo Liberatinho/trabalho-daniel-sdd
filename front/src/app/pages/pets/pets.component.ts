@@ -4,7 +4,7 @@ import {
   OnInit,
   inject
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { AlertComponent } from '../../components/ui/alert/alert.component';
 import { ButtonComponent } from '../../components/ui/button/button.component';
@@ -41,6 +41,9 @@ import { PetService } from '../../services/pet.service';
 
       @if (errorMessage) {
         <app-alert variant="error" title="Não foi possível carregar os pets" [message]="errorMessage" />
+      }
+      @if (successMessage) {
+        <app-alert variant="success" title="Cadastro concluído" [message]="successMessage" />
       }
 
       @if (petService.isLoading()) {
@@ -87,10 +90,16 @@ import { PetService } from '../../services/pet.service';
 export class PetsComponent implements OnInit {
   readonly petService = inject(PetService);
   private readonly authService = inject(AuthService);
+  private readonly route = inject(ActivatedRoute);
 
   errorMessage = '';
+  successMessage = '';
 
   ngOnInit(): void {
+    if (this.route.snapshot.queryParamMap.get('created') === 'true') {
+      this.successMessage = 'O novo pet foi cadastrado com sucesso.';
+    }
+
     const userId = this.authService.currentUser()?.id;
     if (userId === undefined) {
       this.errorMessage = 'Nenhum usuário autenticado está disponível.';

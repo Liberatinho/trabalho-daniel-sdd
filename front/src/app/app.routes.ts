@@ -7,6 +7,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { AuthenticatedLayoutComponent } from './components/layouts/authenticated-layout/authenticated-layout.component';
 import { PetsComponent } from './pages/pets/pets.component';
+import { PetCreateComponent } from './pages/pet-create/pet-create.component';
 
 export const routes: Routes = [
   {
@@ -31,7 +32,7 @@ export const routes: Routes = [
     component: AuthenticatedLayoutComponent,
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'pets' },
-      { path: 'pets/new', component: RoutePlaceholderComponent },
+      { path: 'pets/new', component: PetCreateComponent },
       { path: 'pets', component: PetsComponent },
       { path: 'vaccines', component: RoutePlaceholderComponent },
       { path: 'consultations', component: RoutePlaceholderComponent },
