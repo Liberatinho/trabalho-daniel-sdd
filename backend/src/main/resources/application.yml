@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: petcare
+
+  # Configuração do banco H2
+  datasource:
+    url: jdbc:h2:mem:petcare
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  # Console H2 (acessar em http://localhost:8080/h2-console)
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # JPA/Hibernate
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # Inicializar dados de exemplo
+  sql:
+    init:
+      mode: always
+
+# Configuração do servidor
+server:
+  port: 8080
+
+# Configuração do Swagger/OpenAPI
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+
+# Logging
+logging:
+  level:
+    com.petcare: DEBUG
+    org.hibernate.SQL: DEBUG
