@@ -6,6 +6,7 @@ import { finalize, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import {
   CreateUserRequest,
+  LoginRequest,
   User
 } from '../models/user.model';
 
@@ -35,7 +36,7 @@ export class AuthService {
     );
   }
 
-  login(): Observable<never> {
+  login(_request: LoginRequest): Observable<never> {
     const error = new AuthenticationUnavailableError();
     this.error.set(error);
     return throwError(() => error);

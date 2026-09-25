@@ -13,6 +13,11 @@ export interface CreateUserRequest {
   readonly password: string;
 }
 
+export interface LoginRequest {
+  readonly email: string;
+  readonly password: string;
+}
+
 export interface UpdateUserRequest {
   readonly name: string;
   readonly email: string;

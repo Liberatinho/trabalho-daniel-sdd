@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/routing/auth.guard';
 import { RoutePlaceholderComponent } from './core/routing/route-placeholder.component';
 import { AuthLayoutComponent } from './components/layouts/auth-layout/auth-layout.component';
+import { LoginComponent } from './pages/login/login.component';
 
 export const routes: Routes = [
   {
@@ -11,7 +12,7 @@ export const routes: Routes = [
     children: [
       {
         path: 'login',
-        component: RoutePlaceholderComponent,
+        component: LoginComponent,
         data: { layout: 'authentication' }
       },
       {
