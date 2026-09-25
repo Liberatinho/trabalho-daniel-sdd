@@ -5,6 +5,7 @@ import { RoutePlaceholderComponent } from './core/routing/route-placeholder.comp
 import { AuthLayoutComponent } from './components/layouts/auth-layout/auth-layout.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
+import { AuthenticatedLayoutComponent } from './components/layouts/authenticated-layout/authenticated-layout.component';
 
 export const routes: Routes = [
   {
@@ -26,7 +27,7 @@ export const routes: Routes = [
   {
     path: '',
     canActivate: [authGuard],
-    component: RoutePlaceholderComponent,
+    component: AuthenticatedLayoutComponent,
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'pets' },
       { path: 'pets', component: RoutePlaceholderComponent },
