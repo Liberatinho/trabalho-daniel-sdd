@@ -72,41 +72,64 @@ winget install EclipseAdoptium.Temurin.17.JDK
 
 ## Como Executar
 
-### 1. Clonar o Repositório
+### 1. Clonar o Repositório e Navegar para a Pasta Backend
 ```bash
-git clone <url-do-repositorio>
-cd PetCare
+git clone https://github.com/Liberatinho/trabalho-daniel-sdd.git
+cd trabalho-daniel-sdd/backend
 ```
 
 ### 2. Compilar o Projeto
-```bash
-mvn clean compile
-```
-
-Ou com Maven wrapper:
-```bash
-./mvnw clean compile
-```
+- **Linux/macOS:**
+  ```bash
+  ./mvnw clean compile
+  ```
+- **Windows (PowerShell / CMD):**
+  ```powershell
+  mvn clean compile
+  # ou usando o wrapper
+  ./mvnw clean compile
+  ```
 
 ### 3. Executar a Aplicação
-```bash
-mvn spring-boot:run
-```
-
-Ou com Maven wrapper:
-```bash
-./mvnw spring-boot:run
-```
+- **Linux/macOS:**
+  ```bash
+  ./mvnw spring-boot:run
+  ```
+- **Windows (PowerShell / CMD):**
+  ```powershell
+  mvn spring-boot:run
+  # ou usando o wrapper
+  ./mvnw spring-boot:run
+  ```
 
 A aplicação estará disponível em: `http://localhost:8080`
 
-### 4. Acessar a Documentação
+### 4. Acessar a Documentação e Ferramentas
 
-- **Swagger UI**: http://localhost:8080/swagger-ui.html
-- **H2 Console**: http://localhost:8080/h2-console
+- **Swagger UI**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- **OpenAPI Docs**: [http://localhost:8080/api-docs](http://localhost:8080/api-docs)
+- **H2 Console**: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
   - JDBC URL: `jdbc:h2:mem:petcare`
   - User: `sa`
-  - Password: (deixe em branco)
+  - Password: *(deixe em branco)*
+- **CORS Configurado**: Liberado para `http://localhost:4200` e `http://127.0.0.1:4200` para consumo pelo front-end local.
+
+## Roteiro de Demonstração da API (Swagger)
+
+Para apresentar ou testar a API no Swagger UI em 8–12 passos rápidos (cobrindo regras de negócio, validações, segurança e filtros), consulte o guia completo em:
+👉 [docs/demo-api.md](docs/demo-api.md)
+
+Principais pontos demonstrados no roteiro:
+1. `GET /api/users` — Listagem dos usuários iniciais (Maria e João)
+2. `GET /api/users/1/pets` — Listagem dos pets da Maria (Rex e Mimi)
+3. `POST /api/users/1/pets` — Cadastro de novo pet
+4. `POST /api/users/1/pets` — Validação: campos obrigatórios vazios retornam `400 Bad Request`
+5. `GET /api/users/2/pets/1` — Ownership: usuário 2 tentando ver pet do usuário 1 retorna `403 Forbidden`
+6. `GET /api/users/1/pets/1/vaccines` — Histórico de vacinas do pet
+7. `POST /api/users/1/pets/1/vaccines` — Regra: próxima dose anterior à aplicação retorna `400 Bad Request`
+8. `GET /api/users/1/pets/1/consultations?status=SCHEDULED` — Filtro de consultas agendadas
+9. `PUT /api/users/2/pets/3/consultations/3` — Regra: consulta cancelada não pode ser alterada (`400 Bad Request`)
+10. `GET /api/users/1/pets/1/reminders?type=VACCINE` — Filtro de lembretes por tipo
 
 ## Endpoints da API
 
@@ -148,35 +171,49 @@ A aplicação estará disponível em: `http://localhost:8080`
 
 ## Regras de Negócio Implementadas
 
-1. **Ownership**: Usuário só pode acessar seus próprios pets
-2. **Vacinas**: Próxima dose não pode ser anterior à data de aplicação
+1. **Ownership**: Usuário só pode acessar seus próprios pets (tentativas não autorizadas retornam `403 Forbidden`)
+2. **Vacinas**: Próxima dose não pode ser anterior à data de aplicação (`400 Bad Request`)
 3. **Consultas**:
-   - Consulta cancelada não pode ser alterada
-   - Consulta realizada não pode voltar para agendada
-4. **Validações**: Campos obrigatórios, emails válidos, datas consistentes
+   - Consulta cancelada não pode ser alterada (`400 Bad Request`)
+   - Consulta realizada não pode voltar para agendada (`400 Bad Request`)
+4. **Validações**: Campos obrigatórios, emails válidos e únicos, datas consistentes
 
-## Dados de Exemplo
+## Dados de Exemplo (DataInitializer)
 
-Ao iniciar, a aplicação carrega automaticamente:
-- 2 usuários (Maria Silva, João Santos)
-- 3 pets (Rex, Mimi, Thor)
-- 3 vacinas
-- 3 consultas
-- 3 lembretes
+Ao iniciar a aplicação, o `DataInitializer` carrega automaticamente os seguintes dados de demonstração:
+
+- **Usuário 1:** Maria Silva (`maria@email.com` / senha: `senha123`)
+  - **Pet 1: Rex** (Cão, Labrador, nascimento: 12/03/2020)
+    - Vacina: V10 (aplicada em 10/01/2026, próxima dose em 10/07/2026)
+    - Consulta: Check-up anual (25/09/2026 10:00, Dra. Ana Costa, `SCHEDULED`)
+    - Lembrete 1: "Vermífugo trimestral" (`MEDICATION`, 01/10/2026, pendente)
+    - Lembrete 2: "Reforço da V10" (`VACCINE`, 10/07/2026, pendente)
+  - **Pet 2: Mimi** (Gato, Siamês, nascimento: 05/08/2022)
+    - Vacina: Antirrábica (aplicada em 01/02/2026, próxima dose em 01/02/2027)
+    - Consulta: Retorno de cirurgia (10/08/2026 14:30, Dr. Paulo Lima, `COMPLETED`)
+    - Lembrete: "Retorno pós-cirurgia" (`CONSULTATION`, 30/09/2026, concluído)
+
+- **Usuário 2:** João Santos (`joao@email.com` / senha: `senha456`)
+  - **Pet 3: Thor** (Cão, Pastor Alemão, nascimento: 20/11/2019)
+    - Vacina: Giárdia (aplicada em 15/03/2026)
+    - Consulta: Vacinação (05/09/2026 09:00, Dra. Ana Costa, `CANCELLED`)
 
 ## Testes
 
-### Executar Testes Unitários
+### Executar a Suíte de Testes
 ```bash
 mvn test
+# ou com wrapper
+./mvnw test
 ```
 
-Os testes cobrem:
-- UserService (criação, validação de email, busca)
-- PetService (CRUD, validação de ownership)
-- VaccineService (validação de datas)
-- ConsultationService (transições de status)
-- ReminderService (filtros e CRUD)
+A suíte completa conta com **84 testes automatizados** (unitários e de integração):
+- `UserServiceTest` e `UserControllerTest` (CRUD e regras de usuário)
+- `PetServiceTest` e `PetControllerTest` (CRUD, ownership, validação e segurança `403`)
+- `VaccineServiceTest` e `VaccineControllerTest` (validação de datas de doses e regras)
+- `ConsultationServiceTest` e `ConsultationControllerTest` (máquina de estados e transições proibidas)
+- `ReminderServiceTest` e `ReminderControllerTest` (filtros por tipo e status)
+- `CorsConfigTest` (liberação de CORS e preflight `OPTIONS` para `http://localhost:4200`)
 
 ## Abordagem cc-sdd
 
