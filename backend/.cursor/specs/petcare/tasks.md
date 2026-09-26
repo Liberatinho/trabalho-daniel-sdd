@@ -1,8 +1,8 @@
 # PetCare - Tarefas de Implementação
 
 > Status atual (não reimplementar o que já está Concluído):
-> User, Pet, Vaccine, Consultation, Reminder, repositórios, services, controllers e GlobalExceptionHandler já estão feitos.
-> Ainda pendente: testes de Pet (TASK-021/022) e TASK-023 (docs finais da apresentação).
+> User, Pet, Vaccine, Consultation, Reminder, repositórios, services, controllers, GlobalExceptionHandler e testes unitários/integração já estão feitos.
+> Ainda pendente: TASK-023 (docs finais da apresentação).
 
 ## TASK-001: Configuração Inicial do Projeto
 **Status:** Concluído
@@ -207,23 +207,23 @@
 - [X] Projeto inicializado no Git
 
 ## TASK-021: Testes Unitários - Services
-**Status:** ⏳ Pendente
+**Status:** Concluído
 **Requisitos:** Todos
 **Descrição:** Implementar testes unitários para todas as camadas de serviço.
 **Entregáveis:**
 - [X] UserServiceTest
-- [ ] PetServiceTest
+- [X] PetServiceTest
 - [X] VaccineServiceTest
 - [X] ConsultationServiceTest
 - [X] ReminderServiceTest
 
 ## TASK-022: Testes de Integração - Controllers
-**Status:** ⏳ Pendente
+**Status:** Concluído
 **Requisitos:** Todos
 **Descrição:** Implementar testes de integração para todos os controllers.
 **Entregáveis:**
 - [X] UserControllerTest
-- [ ] PetControllerTest
+- [X] PetControllerTest
 - [X] VaccineControllerTest
 - [X] ConsultationControllerTest
 - [X] ReminderControllerTest
