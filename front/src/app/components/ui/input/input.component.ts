@@ -49,7 +49,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 export class InputComponent implements ControlValueAccessor {
   @Input({ required: true }) id = '';
   @Input({ required: true }) label = '';
-  @Input() type: 'text' | 'email' | 'password' = 'text';
+  @Input() type: 'text' | 'email' | 'password' | 'datetime-local' = 'text';
   @Input() placeholder = '';
   @Input() autocomplete = 'off';
   @Input() required = false;
