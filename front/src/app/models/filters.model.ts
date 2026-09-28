@@ -2,6 +2,8 @@ import { ConsultationStatus } from './consultation.model';
 import { ReminderType } from './reminder.model';
 
 export interface ConsultationFilters {
+  readonly search?: string;
+  readonly petId?: number;
   readonly status?: ConsultationStatus;
 }
 
