@@ -7,7 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 
 @RestController
@@ -15,15 +15,17 @@ import java.util.List;
 public class ConsultationController {
 
     private final ConsultationService consultationService;
-
-    public ConsultationController(ConsultationService consultationService) {
+    private final ObjectMapper objectMapper;
+    public ConsultationController(ConsultationService consultationService, ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
         this.consultationService = consultationService;
     }
 
     @PostMapping
     public ResponseEntity<Consultation> createConsultation(@PathVariable Long userId,
                                                            @PathVariable Long petId,
-                                                           @Valid @RequestBody Consultation consultation) {
+                                                           @Valid @RequestBody String consultationJson) {
+        Consultation consultation = objectMapper.readValue(consultationJson, Consultation.class);
         Consultation created = consultationService.createConsultation(userId, petId, consultation);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -39,8 +41,8 @@ public class ConsultationController {
     @GetMapping
     public ResponseEntity<List<Consultation>> getConsultations(@PathVariable Long userId,
                                                               @PathVariable Long petId,
-                                                              @RequestParam(required = false) ConsultationStatus status) {
-        List<Consultation> consultations = consultationService.getConsultations(userId, petId, status);
+                                                              @RequestBody String consultationsJson) {
+        List<Consultation> consultations = objectMapper.readValue(consultationsJson, List.class);
         return ResponseEntity.ok(consultations);
     }
 
@@ -48,7 +50,8 @@ public class ConsultationController {
     public ResponseEntity<Consultation> updateConsultation(@PathVariable Long userId,
                                                           @PathVariable Long petId,
                                                           @PathVariable Long id,
-                                                          @Valid @RequestBody Consultation consultation) {
+                                                          @Valid @RequestBody String consultationJson) {
+        Consultation consultation = objectMapper.readValue(consultationJson, Consultation.class);
         Consultation updated = consultationService.updateConsultation(userId, petId, id, consultation);
         return ResponseEntity.ok(updated);
     }

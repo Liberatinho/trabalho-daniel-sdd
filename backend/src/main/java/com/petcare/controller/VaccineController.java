@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -14,15 +15,18 @@ import java.util.List;
 public class VaccineController {
 
     private final VaccineService vaccineService;
+    private final ObjectMapper objectMapper;
 
-    public VaccineController(VaccineService vaccineService) {
+    public VaccineController(VaccineService vaccineService, ObjectMapper objectMapper) {
         this.vaccineService = vaccineService;
+        this.objectMapper = objectMapper;
     }
 
     @PostMapping
     public ResponseEntity<Vaccine> createVaccine(@PathVariable Long userId,
                                                  @PathVariable Long petId,
-                                                 @Valid @RequestBody Vaccine vaccine) {
+                                                 @Valid @RequestBody String vaccineJson) {
+        Vaccine vaccine = objectMapper.readValue(vaccineJson, Vaccine.class);
         Vaccine created = vaccineService.createVaccine(userId, petId, vaccine);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -37,8 +41,9 @@ public class VaccineController {
 
     @GetMapping
     public ResponseEntity<List<Vaccine>> getVaccines(@PathVariable Long userId,
-                                                     @PathVariable Long petId) {
-        List<Vaccine> vaccines = vaccineService.getVaccines(userId, petId);
+                                                     @PathVariable Long petId,
+                                                     @RequestBody String vaccinesJson) {
+        List<Vaccine> vaccines = objectMapper.readValue(vaccinesJson, List.class);
         return ResponseEntity.ok(vaccines);
     }
 
@@ -46,7 +51,8 @@ public class VaccineController {
     public ResponseEntity<Vaccine> updateVaccine(@PathVariable Long userId,
                                                  @PathVariable Long petId,
                                                  @PathVariable Long id,
-                                                 @Valid @RequestBody Vaccine vaccine) {
+                                                 @Valid @RequestBody String vaccineJson) {
+        Vaccine vaccine = objectMapper.readValue(vaccineJson, Vaccine.class);
         Vaccine updated = vaccineService.updateVaccine(userId, petId, id, vaccine);
         return ResponseEntity.ok(updated);
     }
