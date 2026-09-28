@@ -2,9 +2,8 @@ package com.petcare.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.CPF;
 import jakarta.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.Hash;
+import jakarta.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +24,11 @@ public class User {
     private String email;
 
     @NotBlank(message = "CPF é obrigatório")
-    @CPF(message = "CPF deve ser válido")
     @Column(unique = true)
+    @Pattern(
+    regexp = "\\d{11}",
+    message = "CPF deve conter 11 números"
+    )
     private String cpf;
 
     @NotBlank(message = "Cidade é obrigatória")

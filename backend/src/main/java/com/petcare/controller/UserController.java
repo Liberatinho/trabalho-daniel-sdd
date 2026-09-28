@@ -38,15 +38,13 @@ public class UserController {
 
     @GetMapping("/email/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
-        String email = objectMapper.readValue(emailJson, String.class);
-        User user = userService.getUserByEmail(emailValue);
+        User user = userService.getUserByEmail(email);
         return ResponseEntity.ok(user);
     }
 
     @GetMapping("/cpf/{cpf}")
     public ResponseEntity<User> getUserByCpf(@PathVariable String cpf) {
-        String cpfValue = objectMapper.readValue(cpfJson, String.class);
-        User user = userService.getUserByCpf(cpfValue);
+        User user = userService.getUserByCpf(cpf);
         return ResponseEntity.ok(user);
     }
 
