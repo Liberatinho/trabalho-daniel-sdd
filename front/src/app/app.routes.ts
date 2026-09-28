@@ -9,6 +9,7 @@ import { AuthenticatedLayoutComponent } from './components/layouts/authenticated
 import { PetsComponent } from './pages/pets/pets.component';
 import { PetCreateComponent } from './pages/pet-create/pet-create.component';
 import { VaccinesComponent } from './pages/vaccines/vaccines.component';
+import { ConsultationsComponent } from './pages/consultations/consultations.component';
 
 export const routes: Routes = [
   {
@@ -41,7 +42,7 @@ export const routes: Routes = [
       { path: 'pets/new', component: PetCreateComponent },
       { path: 'pets', component: PetsComponent },
       { path: 'vaccines', component: VaccinesComponent },
-      { path: 'consultations', component: RoutePlaceholderComponent },
+      { path: 'consultations', component: ConsultationsComponent },
       { path: 'reminders', component: RoutePlaceholderComponent }
     ]
   },

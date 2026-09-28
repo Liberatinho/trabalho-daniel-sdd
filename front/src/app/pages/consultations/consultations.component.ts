@@ -1,0 +1,29 @@
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { AlertComponent } from '../../components/ui/alert/alert.component';
+import { BadgeComponent } from '../../components/ui/badge/badge.component';
+import { ButtonComponent } from '../../components/ui/button/button.component';
+import { CardComponent } from '../../components/ui/card/card.component';
+import { EmptyStateComponent } from '../../components/ui/empty-state/empty-state.component';
+import { LoadingComponent } from '../../components/ui/loading/loading.component';
+import { SearchComponent } from '../../components/ui/search/search.component';
+import { SelectComponent } from '../../components/ui/select/select.component';
+import { TableComponent } from '../../components/ui/table/table.component';
+import { ApiHttpError } from '../../core/http/api-error';
+import { ConsultationStatus } from '../../models/consultation.model';
+import { AuthService } from '../../services/auth.service';
+import { ConsultationService } from '../../services/consultation.service';
+import { PetService } from '../../services/pet.service';
+
+@Component({ selector: 'app-consultations', standalone: true, imports: [AlertComponent, BadgeComponent, ButtonComponent, CardComponent, EmptyStateComponent, LoadingComponent, ReactiveFormsModule, SearchComponent, SelectComponent, TableComponent], template: `
+<div class="consultations-page"><header class="consultations-page__heading"><div><span>Cuidados</span><h1>Consultas e Atendimentos</h1><p>Acompanhe a agenda veterinária dos seus pets.</p></div><app-button type="button">Agendar Nova Consulta</app-button></header>
+<div class="consultations-page__toolbar"><app-search id="consultations-search" label="Buscar consulta" placeholder="Pet, veterinário ou motivo" [value]="service.search()" (valueChange)="service.setSearch($event)"/><app-select id="consultations-pet" label="Pet" [options]="petOptions()" [formControl]="petFilter"/><app-select id="consultations-status" label="Status" [options]="statusOptions" [formControl]="statusFilter"/></div>
+@if(errorMessage()) { <app-alert variant="error" title="Não foi possível carregar as consultas" [message]="errorMessage()"/> }
+@if(isBusy()) { <app-loading label="Carregando agenda veterinária..."/> } @else if(!errorMessage()) { <app-card title="Agenda Veterinária">@if(service.filteredItems().length === 0) { <app-empty-state [title]="hasFilters() ? 'Nenhuma consulta encontrada' : 'Nenhuma consulta agendada'" message="Ajuste os filtros ou agende uma nova consulta."/> } @else { <app-table label="Agenda veterinária"><thead><tr><th>Pet</th><th>Veterinário(a)</th><th>Data</th><th>Horário</th><th>Motivo</th><th>Status</th><th>Observações</th></tr></thead><tbody>@for(item of service.filteredItems();track item.consultation.id){<tr><td>{{item.pet.name}}</td><td>{{item.consultation.veterinarian}}</td><td>{{date(item.consultation.date)}}</td><td>{{time(item.consultation.date)}}</td><td>{{item.consultation.reason}}</td><td><app-badge>{{statusLabel(item.consultation.status)}}</app-badge></td><td>{{item.consultation.notes || '—'}}</td></tr>}</tbody></app-table> }</app-card> }</div>`, styleUrl: './consultations.component.css', changeDetection: ChangeDetectionStrategy.OnPush })
+export class ConsultationsComponent implements OnInit {
+ readonly service=inject(ConsultationService); private readonly pets=inject(PetService); private readonly auth=inject(AuthService);
+ readonly petFilter=new FormControl('all',{nonNullable:true}); readonly statusFilter=new FormControl('all',{nonNullable:true}); readonly errorMessage=signal(''); readonly petOptions=signal<readonly {value:string;label:string}[]>([{value:'all',label:'Todos os pets'}]);
+ readonly statusOptions=[{value:'all',label:'Todos os status'},{value:ConsultationStatus.Scheduled,label:'Agendada'},{value:ConsultationStatus.Completed,label:'Realizada'},{value:ConsultationStatus.Cancelled,label:'Cancelada'}]; readonly isBusy=computed(()=>this.pets.isLoading()||this.service.isLoading()); readonly hasFilters=computed(()=>!!this.service.search()||this.service.petId()!==null||this.service.status()!==null);
+ ngOnInit():void { this.petFilter.valueChanges.subscribe(v=>this.service.setPetId(v==='all'?null:Number(v))); this.statusFilter.valueChanges.subscribe(v=>this.service.setStatus(v==='all'?null:v as ConsultationStatus)); const id=this.auth.currentUser()?.id; if(id===undefined){this.errorMessage.set('Nenhum usuário autenticado está disponível.');return;} this.pets.listPets(id).subscribe({next: ps=>{this.petOptions.set([{value:'all',label:'Todos os pets'},...ps.map(p=>({value:String(p.id),label:p.name}))]);this.service.listConsultations(id,ps).subscribe({error:e=>this.handleError(e)});},error:e=>this.handleError(e,'Não foi possível carregar os pets.')}); }
+ date(value:string):string { const [d]=value.split('T'); const [y,m,day]=d.split('-'); return y&&m&&day?`${day}/${m}/${y}`:value; } time(value:string):string{return value.split('T')[1]?.slice(0,5)||'—';} statusLabel(status:ConsultationStatus):string{return ({SCHEDULED:'Agendada',COMPLETED:'Realizada',CANCELLED:'Cancelada'} as Record<string,string>)[status]||status;} private handleError(e:unknown,fallback='Não foi possível carregar as consultas.'):void{this.errorMessage.set(e instanceof ApiHttpError?e.message:fallback);}
+}
