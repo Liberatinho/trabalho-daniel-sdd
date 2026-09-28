@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 
+import { AlertComponent } from '../../ui/alert/alert.component';
 import { AvatarComponent } from '../../ui/avatar/avatar.component';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { HeaderComponent } from '../../ui/header/header.component';
@@ -16,6 +17,7 @@ import { AuthService } from '../../../services/auth.service';
   selector: 'app-authenticated-layout',
   standalone: true,
   imports: [
+    AlertComponent,
     AvatarComponent,
     ButtonComponent,
     HeaderComponent,
@@ -37,6 +39,7 @@ import { AuthService } from '../../../services/auth.service';
           <app-button
             variant="text"
             aria-label="Sair da conta"
+            [loading]="isLoggingOut"
             (click)="logout()"
           >
             Sair
@@ -50,6 +53,13 @@ import { AuthService } from '../../../services/auth.service';
           (notificationsClicked)="notificationsClicked()"
         />
         <main class="authenticated-layout__content">
+          @if (logoutError) {
+            <app-alert
+              variant="error"
+              title="Não foi possível sair"
+              [message]="logoutError"
+            />
+          }
           <router-outlet />
         </main>
       </div>
@@ -62,6 +72,9 @@ export class AuthenticatedLayoutComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
+  isLoggingOut = false;
+  logoutError = '';
+
   readonly userName = computed(
     () => this.authService.currentUser()?.name ?? 'Usuário não autenticado'
   );
@@ -71,7 +84,17 @@ export class AuthenticatedLayoutComponent {
   }
 
   logout(): void {
-    this.authService.logout();
-    void this.router.navigate(['/login']);
+    this.logoutError = '';
+    this.isLoggingOut = true;
+    this.authService.logout().subscribe({
+      next: () => {
+        this.isLoggingOut = false;
+        void this.router.navigate(['/login']);
+      },
+      error: () => {
+        this.isLoggingOut = false;
+        this.logoutError = 'Tente novamente.';
+      }
+    });
   }
 }

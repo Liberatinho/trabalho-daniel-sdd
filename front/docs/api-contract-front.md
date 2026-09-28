@@ -1,6 +1,6 @@
 # PetCare — Contrato de integração do frontend
 
-_Fonte verificada em 2026-09-25 a partir do projeto `backend/`._
+_Contrato atual verificado em 2026-09-25 a partir do projeto `backend/`._
 
 ## Base e execução
 
@@ -9,7 +9,22 @@ _Fonte verificada em 2026-09-25 a partir do projeto `backend/`._
 - OpenAPI: `/api-docs`
 - Swagger UI: `/swagger-ui.html`
 - O diretório real do backend neste repositório é `../backend`, não `../back`.
-- Não há configuração de autenticação, CORS ou URL externa no backend atual.
+- Não há configuração de autenticação no backend atual. CORS para o frontend
+  local foi configurado no backend.
+
+## Login demonstrativo
+
+O login usa o endpoint de busca existente:
+
+- `GET /api/users/email/{email}` — o frontend compara a senha digitada com o
+  campo `password` retornado e mantém a identidade somente em memória;
+- `POST /api/users` — cadastro existente;
+- logout — limpa apenas o estado local do navegador.
+
+Isso **é apenas uma demonstração local, não autenticação segura**: o endpoint
+retorna a senha em texto puro, não há sessão do servidor e as APIs não protegem
+o `userId` informado na URL. Não usar com senhas pessoais nem em produção. Ver
+`authentication-front.md`.
 
 ## Usuários
 
@@ -144,6 +159,8 @@ O backend retorna um objeto com `timestamp`, `status`, `error` e `message`. Erro
 - `404` — entidade não encontrada;
 - `500` — erro interno.
 
-## Divergências que bloqueiam decisões de autenticação
+## Limites de autenticação
 
-O backend atual não possui endpoint de login, logout, refresh, sessão, token, middleware de autenticação ou expiração. O cadastro aceita `name`, `email` e `password`, enquanto os requisitos visuais mencionam CPF e cidade. Essas decisões não podem ser resolvidas pelo frontend sem alteração ou confirmação do contrato do backend.
+O backend não possui sessão, endpoint de login/logout, middleware de
+autenticação ou autorização por identidade. O cadastro aceita `name`, `email`
+e `password`; CPF e cidade não fazem parte do contrato atual.

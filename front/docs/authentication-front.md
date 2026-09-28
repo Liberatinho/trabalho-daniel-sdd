@@ -1,43 +1,42 @@
-# PetCare — Estratégia de autenticação do frontend
+# PetCare — Login demonstrativo
 
-_Decisão verificada em 2026-09-25 contra o backend atual._
+_Implementado em 2026-09-28 usando somente endpoints existentes do backend._
 
-## Situação do backend
+## Comportamento atual
 
-O backend atual não implementa autenticação. Não existem endpoints ou mecanismos para:
+O login faz `GET /api/users/email/{email}`, compara no frontend a senha digitada
+com o campo `password` retornado e mantém somente `id`, `name` e `email` em
+memória. Cadastro usa `POST /api/users`. Logout limpa o estado em memória.
 
-- login;
-- logout;
-- refresh de sessão;
-- token JWT/OAuth;
-- cookies de sessão;
-- restauração de sessão;
-- expiração de sessão;
-- middleware de autenticação;
-- autorização por identidade autenticada.
+Não existe endpoint de sessão. Ao recarregar a página, o usuário volta para o
+login. O guard protege somente a navegação no Angular; não protege chamadas à
+API nem os dados.
 
-Os endpoints recebem `userId` diretamente na URL. As regras de ownership são aplicadas pelo serviço quando o usuário e o pet são relacionados, mas não há identidade autenticada que impeça alguém de enviar outro `userId`.
+## Aviso de segurança — somente demonstração local
 
-## Decisão para o frontend
+Este fluxo **não é autenticação segura e não deve ser usado em produção ou com
+senhas pessoais**:
 
-O frontend não deve simular uma autenticação real nem tratar cadastro como login. Também não deve persistir senha, inventar tokens ou criar um guard que represente uma segurança inexistente no backend.
+- O endpoint de busca por e-mail devolve a senha, atualmente em texto puro,
+  para o navegador.
+- A senha trafega e fica acessível no JSON da resposta e nas ferramentas de
+  desenvolvimento do navegador.
+- As APIs recebem `userId` na URL e não vinculam esse identificador a uma
+  identidade autenticada; ocultar rotas na interface não impede acesso a dados
+  de outra conta.
+- Não há sessão no servidor, proteção contra CSRF, limite de tentativas ou
+  recuperação de senha.
+- O banco H2 é em memória; reiniciar o backend apaga os cadastros.
 
-Enquanto o backend não disponibilizar autenticação, login, logout e proteção de sessão ficam bloqueados para implementação funcional. A interface pode ser estruturada conforme os requisitos e o Figma, mas as ações devem permanecer conectadas a um contrato real quando ele existir.
+A tela de login exibe um aviso e mensagens de erro genéricas para o e-mail
+inexistente e a senha incorreta. O frontend descarta a senha antes de atualizar
+o estado do usuário, mas isso **não impede a exposição na resposta HTTP**.
 
-O frontend pode manter apenas estado de usuário explicitamente fornecido por uma futura camada de autenticação. Esse estado não deve ser inferido de credenciais armazenadas no navegador.
+## Requisitos para substituir a demonstração por autenticação segura
 
-## Contrato necessário para desbloqueio
-
-Antes de implementar `AuthService`, guard, interceptor ou restauração de sessão, o backend precisa definir:
-
-1. endpoint e payload de login;
-2. response de autenticação e identificador do usuário;
-3. mecanismo de transporte e armazenamento da sessão;
-4. endpoint e comportamento de logout;
-5. expiração e renovação;
-6. resposta para credenciais inválidas e sessão expirada;
-7. regra de autorização para os recursos aninhados por `userId`.
-
-## Impacto nas especificações existentes
-
-Os requisitos de login, proteção de áreas autenticadas e cadastro com CPF/cidade não correspondem ao contrato atual do backend. O backend atual aceita `name`, `email` e `password` em `POST /api/users`, sem endpoint de login. Essa divergência deve ser resolvida pelo contrato do backend antes de considerar a autenticação concluída.
+Os responsáveis pelo backend devem implementar login e logout com sessão
+protegida, senhas com hash BCrypt, respostas que nunca incluam `password`,
+proteção CSRF e autorização de cada recurso pelo usuário da sessão. A busca
+global e a busca de usuários por e-mail também precisam ser restringidas.
+Depois dessa entrega, o frontend deve trocar a consulta de usuário por e-mail
+pelo contrato de autenticação do servidor.

@@ -72,6 +72,7 @@ describe('PetService', () => {
       { id: 3, name: 'Mimi', species: 'Gato', breed: 'SRD' }
     ]);
     expect(service.selectedPet()?.id).toBe(3);
+    expect(service.isLoading()).toBe(false);
   });
 
   it('exposes HTTP errors and keeps loading false', () => {

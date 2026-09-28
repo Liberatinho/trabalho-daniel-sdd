@@ -39,6 +39,7 @@ describe('PetCreateComponent', () => {
     fixture.componentInstance.submit();
 
     expect(petService.createPet).not.toHaveBeenCalled();
+    expect(fixture.componentInstance.isSubmitting()).toBe(false);
     expect(fixture.componentInstance.form.controls.name.touched).toBe(true);
   });
 
@@ -78,5 +79,6 @@ describe('PetCreateComponent', () => {
       name: 'Luna',
       species: 'Gato'
     });
+    expect(fixture.componentInstance.isSubmitting()).toBe(false);
   });
 });

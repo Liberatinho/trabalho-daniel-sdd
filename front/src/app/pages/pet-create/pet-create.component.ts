@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -42,16 +47,16 @@ import { CreatePetRequest } from '../../models/pet.model';
         </div>
       </header>
 
-      @if (errorMessage) {
+      @if (errorMessage()) {
         <app-alert
           variant="error"
           title="Não foi possível salvar o cadastro"
-          [message]="errorMessage"
+          [message]="errorMessage()"
         />
       }
 
-      @if (successMessage) {
-        <app-alert variant="success" title="Cadastro salvo" [message]="successMessage" />
+      @if (successMessage()) {
+        <app-alert variant="success" title="Cadastro salvo" [message]="successMessage()" />
       }
 
       <app-card>
@@ -94,7 +99,7 @@ import { CreatePetRequest } from '../../models/pet.model';
 
           <div class="pet-create__actions">
             <app-button variant="secondary" routerLink="/pets">Cancelar</app-button>
-            <app-button type="submit" [loading]="isSubmitting">Salvar cadastro</app-button>
+            <app-button type="submit" [loading]="isSubmitting()">Salvar cadastro</app-button>
           </div>
         </form>
       </app-card>
@@ -122,13 +127,13 @@ export class PetCreateComponent {
     notes: new FormControl('', { nonNullable: true })
   });
 
-  isSubmitting = false;
-  errorMessage = '';
-  successMessage = '';
+  readonly isSubmitting = signal(false);
+  readonly errorMessage = signal('');
+  readonly successMessage = signal('');
 
   submit(): void {
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.errorMessage.set('');
+    this.successMessage.set('');
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -136,11 +141,11 @@ export class PetCreateComponent {
 
     const userId = this.authService.currentUser()?.id;
     if (userId === undefined) {
-      this.errorMessage = 'Nenhum usuário autenticado está disponível.';
+      this.errorMessage.set('Nenhum usuário autenticado está disponível.');
       return;
     }
 
-    this.isSubmitting = true;
+    this.isSubmitting.set(true);
     const values = this.form.getRawValue();
     const request: CreatePetRequest = {
       name: values.name,
@@ -152,7 +157,7 @@ export class PetCreateComponent {
 
     this.petService
       .createPet(userId, request)
-      .pipe(finalize(() => (this.isSubmitting = false)))
+      .pipe(finalize(() => this.isSubmitting.set(false)))
       .subscribe({
         next: () => {
           void this.router.navigate(['/pets'], {
@@ -160,10 +165,11 @@ export class PetCreateComponent {
           });
         },
         error: (error: unknown) => {
-          this.errorMessage =
+          this.errorMessage.set(
             error instanceof ApiHttpError
               ? error.message
-              : 'Não foi possível salvar o cadastro.';
+              : 'Não foi possível salvar o cadastro.'
+          );
         }
       });
   }

@@ -1,8 +1,9 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, defer, of, throwError } from 'rxjs';
-import { finalize, tap } from 'rxjs/operators';
+import { catchError, finalize, map, tap } from 'rxjs/operators';
 
+import { ApiHttpError } from '../core/http/api-error';
 import { environment } from '../../environments/environment';
 import {
   CreateUserRequest,
@@ -10,10 +11,14 @@ import {
   User
 } from '../models/user.model';
 
-export class AuthenticationUnavailableError extends Error {
+interface UserWithPassword extends User {
+  readonly password: string;
+}
+
+export class InvalidCredentialsError extends Error {
   constructor() {
-    super('O backend ainda não disponibiliza autenticação.');
-    this.name = 'AuthenticationUnavailableError';
+    super('E-mail ou senha inválidos.');
+    this.name = 'InvalidCredentialsError';
   }
 }
 
@@ -29,27 +34,66 @@ export class AuthService {
     return defer(() => {
       this.isLoading.set(true);
       this.error.set(null);
-      return this.http.post<User>(`${environment.apiUrl}/api/users`, request);
+      return this.http
+        .post<User>(`${environment.apiUrl}/api/users`, request)
+        .pipe(map((user) => toPublicUser(user)));
     }).pipe(
       tap(() => this.error.set(null)),
       finalize(() => this.isLoading.set(false))
     );
   }
 
-  login(_request: LoginRequest): Observable<never> {
-    const error = new AuthenticationUnavailableError();
-    this.error.set(error);
-    return throwError(() => error);
+  login(request: LoginRequest): Observable<User> {
+    return defer(() => {
+      this.isLoading.set(true);
+      this.error.set(null);
+      return this.http
+        .get<UserWithPassword>(
+          `${environment.apiUrl}/api/users/email/${encodeURIComponent(request.email)}`
+        )
+        .pipe(
+          catchError((error: unknown) => {
+            if (error instanceof ApiHttpError && error.status === 404) {
+              return throwError(() => new InvalidCredentialsError());
+            }
+            return throwError(() => error);
+          }),
+          map((user) => {
+            if (user.password !== request.password) {
+              throw new InvalidCredentialsError();
+            }
+            return toPublicUser(user);
+          }),
+          tap((user) => this.currentUser.set(user))
+        );
+    }).pipe(
+      tap(() => this.error.set(null)),
+      catchError((error: unknown) => {
+        this.error.set(
+          error instanceof Error ? error : new Error('Falha no login.')
+        );
+        return throwError(() => error);
+      }),
+      finalize(() => this.isLoading.set(false))
+    );
   }
 
   restoreSession(): Observable<User | null> {
-    this.currentUser.set(null);
     this.error.set(null);
-    return of(null);
+    return of(this.currentUser());
   }
 
-  logout(): void {
-    this.currentUser.set(null);
+  logout(): Observable<void> {
     this.error.set(null);
+    this.currentUser.set(null);
+    return of(undefined);
   }
+}
+
+function toPublicUser(user: User): User {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email
+  };
 }

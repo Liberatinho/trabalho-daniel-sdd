@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { AlertComponent } from '../../components/ui/alert/alert.component';
@@ -14,7 +14,7 @@ import { InputComponent } from '../../components/ui/input/input.component';
 import { LoginRequest } from '../../models/user.model';
 import {
   AuthService,
-  AuthenticationUnavailableError
+  InvalidCredentialsError
 } from '../../services/auth.service';
 
 @Component({
@@ -80,6 +80,8 @@ import {
 })
 export class LoginComponent {
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly form = new FormGroup({
     email: new FormControl('', {
@@ -108,11 +110,15 @@ export class LoginComponent {
       .login(request)
       .pipe(finalize(() => (this.isSubmitting = false)))
       .subscribe({
+        next: () => {
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+          void this.router.navigateByUrl(isSafeReturnUrl(returnUrl) ? returnUrl : '/pets');
+        },
         error: (error: unknown) => {
           this.errorMessage =
-            error instanceof AuthenticationUnavailableError
-              ? error.message
-              : 'Não foi possível concluir o login.';
+            error instanceof InvalidCredentialsError
+              ? 'E-mail ou senha inválidos.'
+              : 'Não foi possível concluir o login. Tente novamente.';
         }
       });
   }
@@ -130,4 +136,8 @@ export class LoginComponent {
     }
     return 'Valor inválido.';
   }
+}
+
+function isSafeReturnUrl(value: string | null): value is string {
+  return value !== null && value.startsWith('/') && !value.startsWith('//');
 }
