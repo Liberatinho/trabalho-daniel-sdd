@@ -32,112 +32,160 @@ class PetServiceTest {
     @InjectMocks
     private PetService petService;
 
-    private User testUser;
-    private Pet testPet;
+    private User user;
+    private Pet pet;
 
     @BeforeEach
     void setUp() {
-        testUser = new User("João Silva", "joao@email.com", "senha123");
-        testUser.setId(1L);
+        user = new User("Maria Silva", "maria@email.com", "senha123");
+        user.setId(1L);
 
-        testPet = new Pet("Rex", "Cachorro", "Labrador");
-        testPet.setBirthDate(LocalDate.of(2020, 3, 15));
-        testPet.setUser(testUser);
-        testPet.setId(1L);
+        pet = new Pet("Rex", "Cão", user);
+        pet.setId(10L);
+        pet.setBreed("Labrador");
+        pet.setBirthDate(LocalDate.of(2020, 3, 12));
+        pet.setNotes("Muito dócil");
     }
 
     @Test
     void createPet_Success() {
-        when(userService.getUserById(1L)).thenReturn(testUser);
-        when(petRepository.save(any(Pet.class))).thenReturn(testPet);
+        when(userService.getUserById(1L)).thenReturn(user);
+        when(petRepository.save(any(Pet.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        Pet result = petService.createPet(testPet, 1L);
+        Pet newPet = new Pet("Rex", "Cão", null);
+        Pet result = petService.createPet(newPet, 1L);
 
         assertNotNull(result);
-        assertEquals("Rex", result.getName());
-        assertEquals(testUser, result.getUser());
-        verify(petRepository, times(1)).save(testPet);
+        assertEquals(user, result.getUser());
+        verify(userService, times(1)).getUserById(1L);
+        verify(petRepository, times(1)).save(newPet);
+    }
+
+    @Test
+    void createPet_UserNotFound_ThrowsNotFound() {
+        when(userService.getUserById(999L)).thenThrow(new EntityNotFoundException("Usuário não encontrado: 999"));
+
+        Pet newPet = new Pet("Rex", "Cão", null);
+
+        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class,
+                () -> petService.createPet(newPet, 999L));
+        assertEquals("Usuário não encontrado: 999", ex.getMessage());
+        verify(petRepository, never()).save(any());
     }
 
     @Test
     void getPetById_Success() {
-        when(petRepository.findById(1L)).thenReturn(Optional.of(testPet));
+        when(petRepository.findById(10L)).thenReturn(Optional.of(pet));
 
-        Pet result = petService.getPetById(1L);
+        Pet result = petService.getPetById(10L);
 
         assertNotNull(result);
-        assertEquals(1L, result.getId());
+        assertEquals(10L, result.getId());
         assertEquals("Rex", result.getName());
     }
 
     @Test
-    void getPetById_NotFound_ThrowsException() {
-        when(petRepository.findById(99L)).thenReturn(Optional.empty());
+    void getPetById_NotFound_ThrowsNotFound() {
+        when(petRepository.findById(999L)).thenReturn(Optional.empty());
 
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
-            petService.getPetById(99L);
-        });
-
-        assertEquals("Pet não encontrado: 99", exception.getMessage());
+        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class,
+                () -> petService.getPetById(999L));
+        assertEquals("Pet não encontrado: 999", ex.getMessage());
     }
 
     @Test
     void getPetByIdAndUser_Success() {
-        when(petRepository.existsByIdAndUserId(1L, 1L)).thenReturn(true);
-        when(petRepository.findById(1L)).thenReturn(Optional.of(testPet));
+        when(petRepository.existsByIdAndUserId(10L, 1L)).thenReturn(true);
+        when(petRepository.findById(10L)).thenReturn(Optional.of(pet));
 
-        Pet result = petService.getPetByIdAndUser(1L, 1L);
+        Pet result = petService.getPetByIdAndUser(10L, 1L);
 
         assertNotNull(result);
-        assertEquals(testUser, result.getUser());
+        assertEquals(10L, result.getId());
+        assertEquals("Rex", result.getName());
     }
 
     @Test
-    void getPetByIdAndUser_PetNotBelongsToUser_ThrowsException() {
-        when(petRepository.existsByIdAndUserId(1L, 2L)).thenReturn(false);
+    void getPetByIdAndUser_NotOwned_ThrowsSecurityException() {
+        when(petRepository.existsByIdAndUserId(10L, 2L)).thenReturn(false);
 
-        SecurityException exception = assertThrows(SecurityException.class, () -> {
-            petService.getPetByIdAndUser(1L, 2L);
-        });
-
-        assertEquals("Pet não pertence ao usuário ou não existe", exception.getMessage());
+        SecurityException ex = assertThrows(SecurityException.class,
+                () -> petService.getPetByIdAndUser(10L, 2L));
+        assertEquals("Pet não pertence ao usuário ou não existe", ex.getMessage());
+        verify(petRepository, never()).findById(any());
     }
 
     @Test
     void getPetsByUser_Success() {
-        when(userService.getUserById(1L)).thenReturn(testUser);
-        when(petRepository.findByUserId(1L)).thenReturn(Arrays.asList(testPet));
+        when(userService.getUserById(1L)).thenReturn(user);
+        when(petRepository.findByUserId(1L)).thenReturn(Arrays.asList(pet));
 
-        List<Pet> result = petService.getPetsByUser(1L);
+        List<Pet> pets = petService.getPetsByUser(1L);
 
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals("Rex", result.get(0).getName());
+        assertEquals(1, pets.size());
+        assertEquals("Rex", pets.get(0).getName());
+        verify(userService, times(1)).getUserById(1L);
+        verify(petRepository, times(1)).findByUserId(1L);
+    }
+
+    @Test
+    void getPetsByUser_UserNotFound_ThrowsNotFound() {
+        when(userService.getUserById(999L)).thenThrow(new EntityNotFoundException("Usuário não encontrado: 999"));
+
+        assertThrows(EntityNotFoundException.class,
+                () -> petService.getPetsByUser(999L));
+        verify(petRepository, never()).findByUserId(any());
     }
 
     @Test
     void updatePet_Success() {
-        Pet updatedData = new Pet("Rex Atualizado", "Cachorro", "Labrador Retriever");
-        updatedData.setNotes("Muito brincalhão");
+        when(petRepository.existsByIdAndUserId(10L, 1L)).thenReturn(true);
+        when(petRepository.findById(10L)).thenReturn(Optional.of(pet));
+        when(petRepository.save(any(Pet.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        when(petRepository.existsByIdAndUserId(1L, 1L)).thenReturn(true);
-        when(petRepository.findById(1L)).thenReturn(Optional.of(testPet));
-        when(petRepository.save(any(Pet.class))).thenReturn(testPet);
+        Pet updatedDetails = new Pet();
+        updatedDetails.setName("Rex Atualizado");
+        updatedDetails.setSpecies("Cão");
+        updatedDetails.setBreed("Golden Retriever");
+        updatedDetails.setBirthDate(LocalDate.of(2020, 4, 1));
+        updatedDetails.setNotes("Atualizado");
 
-        Pet result = petService.updatePet(1L, 1L, updatedData);
+        Pet result = petService.updatePet(10L, 1L, updatedDetails);
 
-        assertNotNull(result);
         assertEquals("Rex Atualizado", result.getName());
-        assertEquals("Muito brincalhão", result.getNotes());
+        assertEquals("Golden Retriever", result.getBreed());
+        assertEquals(LocalDate.of(2020, 4, 1), result.getBirthDate());
+        assertEquals("Atualizado", result.getNotes());
+        verify(petRepository, times(1)).save(pet);
+    }
+
+    @Test
+    void updatePet_NotOwned_ThrowsSecurityException() {
+        when(petRepository.existsByIdAndUserId(10L, 2L)).thenReturn(false);
+
+        Pet updatedDetails = new Pet();
+        updatedDetails.setName("Rex Alterado");
+
+        assertThrows(SecurityException.class,
+                () -> petService.updatePet(10L, 2L, updatedDetails));
+        verify(petRepository, never()).save(any());
     }
 
     @Test
     void deletePet_Success() {
-        when(petRepository.existsByIdAndUserId(1L, 1L)).thenReturn(true);
-        when(petRepository.findById(1L)).thenReturn(Optional.of(testPet));
-        doNothing().when(petRepository).delete(testPet);
+        when(petRepository.existsByIdAndUserId(10L, 1L)).thenReturn(true);
+        when(petRepository.findById(10L)).thenReturn(Optional.of(pet));
 
-        assertDoesNotThrow(() -> petService.deletePet(1L, 1L));
-        verify(petRepository, times(1)).delete(testPet);
+        assertDoesNotThrow(() -> petService.deletePet(10L, 1L));
+        verify(petRepository, times(1)).delete(pet);
+    }
+
+    @Test
+    void deletePet_NotOwned_ThrowsSecurityException() {
+        when(petRepository.existsByIdAndUserId(10L, 2L)).thenReturn(false);
+
+        assertThrows(SecurityException.class,
+                () -> petService.deletePet(10L, 2L));
+        verify(petRepository, never()).delete(any());
     }
 }
