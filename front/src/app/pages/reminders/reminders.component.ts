@@ -1,12 +1,16 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { finalize } from 'rxjs';
 
 import { AlertComponent } from '../../components/ui/alert/alert.component';
 import { BadgeComponent } from '../../components/ui/badge/badge.component';
 import { ButtonComponent } from '../../components/ui/button/button.component';
 import { CardComponent } from '../../components/ui/card/card.component';
+import { DateInputComponent } from '../../components/ui/date-input/date-input.component';
 import { EmptyStateComponent } from '../../components/ui/empty-state/empty-state.component';
+import { InputComponent } from '../../components/ui/input/input.component';
 import { LoadingComponent } from '../../components/ui/loading/loading.component';
+import { ModalComponent } from '../../components/ui/modal/modal.component';
 import { SearchComponent } from '../../components/ui/search/search.component';
 import { SelectComponent } from '../../components/ui/select/select.component';
 import { ApiHttpError } from '../../core/http/api-error';
@@ -30,8 +34,11 @@ interface ReminderGroup {
     BadgeComponent,
     ButtonComponent,
     CardComponent,
+    DateInputComponent,
     EmptyStateComponent,
+    InputComponent,
     LoadingComponent,
+    ModalComponent,
     ReactiveFormsModule,
     SearchComponent,
     SelectComponent
@@ -44,7 +51,7 @@ interface ReminderGroup {
           <h1>Central de Lembretes &amp; Cuidados</h1>
           <p>Organize os cuidados importantes de cada pet em um só lugar.</p>
         </div>
-        <app-button type="button">Criar Novo Lembrete</app-button>
+        <app-button type="button" (click)="openCreateModal()">Criar Novo Lembrete</app-button>
       </header>
 
       <div class="reminders-page__toolbar">
@@ -62,6 +69,10 @@ interface ReminderGroup {
 
       @if (errorMessage()) {
         <app-alert title="Não foi possível carregar os lembretes" variant="error" [message]="errorMessage()" />
+      }
+
+      @if (successMessage()) {
+        <app-alert title="Lembrete criado" variant="success" [message]="successMessage()" />
       }
 
       @if (isBusy()) {
@@ -96,6 +107,56 @@ interface ReminderGroup {
           </div>
         }
       }
+
+      <app-modal
+        [open]="isCreateModalOpen()"
+        title="Criar novo lembrete"
+        description="Registre um cuidado importante para um dos seus pets."
+        (closed)="closeCreateModal()"
+      >
+        <form class="reminders-page__form" [formGroup]="createForm" modal-content>
+          @if (createErrorMessage()) {
+            <app-alert title="Não foi possível criar o lembrete" variant="error" [message]="createErrorMessage()" />
+          }
+          <app-select
+            id="reminder-pet"
+            label="Pet"
+            placeholder="Selecione o pet"
+            [required]="true"
+            [options]="createPetOptions()"
+            [error]="createFieldError('petId')"
+            formControlName="petId"
+          />
+          <app-select
+            id="reminder-type"
+            label="Categoria"
+            placeholder="Selecione a categoria"
+            [required]="true"
+            [options]="createTypeOptions"
+            [error]="createFieldError('type')"
+            formControlName="type"
+          />
+          <app-input
+            id="reminder-description"
+            label="Título do lembrete"
+            placeholder="Ex.: Reforço da vacina"
+            [required]="true"
+            [error]="createFieldError('description')"
+            formControlName="description"
+          />
+          <app-date-input
+            id="reminder-due-date"
+            label="Data limite"
+            [required]="true"
+            [error]="createFieldError('dueDate')"
+            formControlName="dueDate"
+          />
+        </form>
+        <div class="reminders-page__modal-actions" modal-footer>
+          <app-button variant="secondary" type="button" [disabled]="isSubmitting()" (click)="closeCreateModal()">Cancelar</app-button>
+          <app-button type="button" [loading]="isSubmitting()" (click)="submitCreate()">Criar lembrete</app-button>
+        </div>
+      </app-modal>
     </div>
   `,
   styleUrl: './reminders.component.css',
@@ -111,6 +172,10 @@ export class RemindersComponent implements OnInit {
   readonly completedFilter = new FormControl('all', { nonNullable: true });
   readonly pets = signal<readonly Pet[]>([]);
   readonly errorMessage = signal('');
+  readonly successMessage = signal('');
+  readonly isCreateModalOpen = signal(false);
+  readonly isSubmitting = signal(false);
+  readonly createErrorMessage = signal('');
   readonly petOptions = signal<readonly { value: string; label: string }[]>([
     { value: 'all', label: 'Todos os pets' }
   ]);
@@ -126,6 +191,13 @@ export class RemindersComponent implements OnInit {
     { value: 'false', label: 'Pendentes' },
     { value: 'true', label: 'Concluídos' }
   ];
+  readonly createTypeOptions = this.typeOptions.slice(1);
+  readonly createForm = new FormGroup({
+    petId: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    type: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    description: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    dueDate: new FormControl('', { nonNullable: true, validators: [Validators.required] })
+  });
   readonly isBusy = computed(() => this.petService.isLoading() || this.reminderService.isLoading());
   readonly groups = computed<readonly ReminderGroup[]>(() =>
     [
@@ -189,6 +261,62 @@ export class RemindersComponent implements OnInit {
   formatDate(value: string): string {
     const [year, month, day] = value.split('-');
     return year && month && day ? `${day}/${month}/${year}` : value;
+  }
+
+  readonly createPetOptions = computed(() =>
+    this.pets().map(pet => ({ value: String(pet.id), label: pet.name }))
+  );
+
+  openCreateModal(): void {
+    this.createErrorMessage.set('');
+    this.successMessage.set('');
+    this.isCreateModalOpen.set(true);
+  }
+
+  closeCreateModal(): void {
+    if (!this.isSubmitting()) {
+      this.isCreateModalOpen.set(false);
+    }
+  }
+
+  submitCreate(): void {
+    this.createErrorMessage.set('');
+    if (this.createForm.invalid) {
+      this.createForm.markAllAsTouched();
+      return;
+    }
+
+    const userId = this.authService.currentUser()?.id;
+    const values = this.createForm.getRawValue();
+    const pet = this.pets().find(candidate => candidate.id === Number(values.petId));
+    if (userId === undefined || !pet) {
+      this.createErrorMessage.set('Não foi possível identificar o pet selecionado.');
+      return;
+    }
+
+    this.isSubmitting.set(true);
+    this.reminderService
+      .createReminder(userId, pet, {
+        type: values.type as ReminderType,
+        description: values.description,
+        dueDate: values.dueDate
+      })
+      .pipe(finalize(() => this.isSubmitting.set(false)))
+      .subscribe({
+        next: () => {
+          this.createForm.reset({ petId: '', type: '', description: '', dueDate: '' });
+          this.isCreateModalOpen.set(false);
+          this.successMessage.set('O lembrete foi adicionado à central de cuidados.');
+        },
+        error: error => this.createErrorMessage.set(
+          error instanceof ApiHttpError ? error.message : 'Não foi possível criar o lembrete.'
+        )
+      });
+  }
+
+  createFieldError(field: 'petId' | 'type' | 'description' | 'dueDate'): string {
+    const control = this.createForm.controls[field];
+    return control.touched && control.hasError('required') ? 'Campo obrigatório.' : '';
   }
 
   private handleError(error: unknown, fallback = 'Não foi possível carregar os lembretes.'): void {

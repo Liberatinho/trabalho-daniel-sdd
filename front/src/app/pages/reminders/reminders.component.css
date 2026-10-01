@@ -21,6 +21,17 @@
   color: var(--color-text-secondary);
 }
 
+.reminders-page__form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.reminders-page__modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
 .reminders-page__eyebrow {
   color: var(--color-brand-secondary);
   font-size: var(--font-size-label);
