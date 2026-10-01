@@ -8,6 +8,8 @@ export interface ConsultationFilters {
 }
 
 export interface ReminderFilters {
+  readonly search?: string;
+  readonly petId?: number;
   readonly type?: ReminderType;
   readonly completed?: boolean;
 }
