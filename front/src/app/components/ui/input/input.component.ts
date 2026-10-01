@@ -24,6 +24,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
         [value]="value"
         [placeholder]="placeholder"
         [autocomplete]="autocomplete"
+        [attr.maxlength]="maxLength"
+        [attr.inputmode]="inputmode || null"
         [disabled]="disabled"
         [attr.aria-describedby]="error ? id + '-error' : null"
         [attr.aria-invalid]="error ? 'true' : 'false'"
@@ -52,6 +54,8 @@ export class InputComponent implements ControlValueAccessor {
   @Input() type: 'text' | 'email' | 'password' | 'datetime-local' = 'text';
   @Input() placeholder = '';
   @Input() autocomplete = 'off';
+  @Input() maxLength: number | null = null;
+  @Input() inputmode = '';
   @Input() required = false;
   @Input() error = '';
 

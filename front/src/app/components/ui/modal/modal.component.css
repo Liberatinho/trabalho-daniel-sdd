@@ -15,6 +15,7 @@
 
 .modal {
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   width: min(100%, 36rem);
   max-height: min(42rem, calc(100dvh - var(--space-8)));
   overflow: hidden;
@@ -70,7 +71,9 @@
 }
 
 .modal__content {
-  overflow: auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: var(--space-6);
 }
 

@@ -62,6 +62,26 @@ import { ApiHttpError } from '../../core/http/api-error';
           formControlName="email"
         />
         <app-input
+          id="register-cpf"
+          label="CPF"
+          autocomplete="off"
+          inputmode="numeric"
+          placeholder="Somente números"
+          [maxLength]="11"
+          [required]="true"
+          [error]="fieldError('cpf')"
+          formControlName="cpf"
+        />
+        <app-input
+          id="register-cidade"
+          label="Cidade"
+          autocomplete="address-level2"
+          placeholder="Sua cidade"
+          [required]="true"
+          [error]="fieldError('cidade')"
+          formControlName="cidade"
+        />
+        <app-input
           id="register-password"
           label="Senha"
           type="password"
@@ -102,6 +122,14 @@ export class RegisterComponent {
       nonNullable: true,
       validators: [Validators.required, Validators.email]
     }),
+    cpf: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.pattern(/^\d{11}$/)]
+    }),
+    cidade: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required]
+    }),
     password: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required]
@@ -138,7 +166,7 @@ export class RegisterComponent {
       });
   }
 
-  fieldError(field: 'name' | 'email' | 'password'): string {
+  fieldError(field: 'name' | 'email' | 'cpf' | 'cidade' | 'password'): string {
     const control = this.form.controls[field];
     if (!control.touched || !control.errors) {
       return '';
@@ -148,6 +176,9 @@ export class RegisterComponent {
     }
     if (control.hasError('email')) {
       return 'Informe um e-mail válido.';
+    }
+    if (field === 'cpf' && control.hasError('pattern')) {
+      return 'CPF deve conter 11 números.';
     }
     return 'Valor inválido.';
   }

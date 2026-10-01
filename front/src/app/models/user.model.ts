@@ -10,6 +10,8 @@ export interface User {
 export interface CreateUserRequest {
   readonly name: string;
   readonly email: string;
+  readonly cpf: string;
+  readonly cidade: string;
   readonly password: string;
 }
 
