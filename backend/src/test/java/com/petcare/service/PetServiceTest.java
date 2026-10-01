@@ -37,7 +37,7 @@ class PetServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new User("Maria Silva", "maria@email.com", "senha123");
+        user = new User("Maria Silva", "maria@email.com", "12345678901", "São Paulo", "senha123");
         user.setId(1L);
 
         pet = new Pet("Rex", "Cão", user);

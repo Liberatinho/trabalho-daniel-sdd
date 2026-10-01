@@ -40,7 +40,7 @@ class ReminderServiceTest {
 
     @BeforeEach
     void setUp() {
-        User user = new User("Maria", "maria@email.com", "senha");
+        User user = new User("Maria", "maria@email.com", "12345678901", "São Paulo", "senha");
         user.setId(1L);
         pet = new Pet("Rex", "Cão", user);
         pet.setId(10L);

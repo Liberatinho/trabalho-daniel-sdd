@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 
 @RestController
@@ -14,16 +13,13 @@ import java.util.List;
 public class PetController {
 
     private final PetService petService;
-    private final ObjectMapper objectMapper;
 
-    public PetController(PetService petService, ObjectMapper objectMapper) {
+    public PetController(PetService petService) {
         this.petService = petService;
-        this.objectMapper = objectMapper;
     }
 
     @PostMapping
-    public ResponseEntity<Pet> createPet(@PathVariable Long userId, @Valid @RequestBody String petJson) {
-        Pet pet = objectMapper.readValue(petJson, Pet.class);
+    public ResponseEntity<Pet> createPet(@PathVariable Long userId, @Valid @RequestBody Pet pet) {
         Pet createdPet = petService.createPet(pet, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPet);
     }
@@ -35,15 +31,13 @@ public class PetController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Pet>> getPetsByUser(@PathVariable Long userId, @RequestBody String petsJson) {
-        List<Pet> pets = objectMapper.readValue(petsJson, List.class);
+    public ResponseEntity<List<Pet>> getPetsByUser(@PathVariable Long userId) {
         List<Pet> pets = petService.getPetsByUser(userId);
         return ResponseEntity.ok(pets);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Pet> updatePet(@PathVariable Long userId, @PathVariable Long id, @Valid @RequestBody String petJson) {
-        Pet pet = objectMapper.readValue(petJson, Pet.class);
+    public ResponseEntity<Pet> updatePet(@PathVariable Long userId, @PathVariable Long id, @Valid @RequestBody Pet pet) {
         Pet updatedPet = petService.updatePet(id, userId, pet);
         return ResponseEntity.ok(updatedPet);
     }
