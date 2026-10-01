@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 
 @RestController
@@ -15,18 +14,15 @@ import java.util.List;
 public class ReminderController {
 
     private final ReminderService reminderService;
-    private final ObjectMapper objectMapper;
 
-    public ReminderController(ReminderService reminderService, ObjectMapper objectMapper) {
+    public ReminderController(ReminderService reminderService) {
         this.reminderService = reminderService;
-        this.objectMapper = objectMapper;
     }
 
     @PostMapping
     public ResponseEntity<Reminder> createReminder(@PathVariable Long userId,
                                                    @PathVariable Long petId,
-                                                   @Valid @RequestBody String reminderJson) {
-        Reminder reminder = objectMapper.readValue(reminderJson, Reminder.class);
+                                                   @Valid @RequestBody Reminder reminder) {
         Reminder created = reminderService.createReminder(userId, petId, reminder);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -42,8 +38,9 @@ public class ReminderController {
     @GetMapping
     public ResponseEntity<List<Reminder>> getReminders(@PathVariable Long userId,
                                                        @PathVariable Long petId,
-                                                       @RequestBody String remindersJson) {
-        List<Reminder> reminders = objectMapper.readValue(remindersJson, List.class);
+                                                       @RequestParam(required = false) ReminderType type,
+                                                       @RequestParam(required = false) Boolean completed) {
+        List<Reminder> reminders = reminderService.getReminders(userId, petId, type, completed);
         return ResponseEntity.ok(reminders);
     }
 
@@ -51,8 +48,7 @@ public class ReminderController {
     public ResponseEntity<Reminder> updateReminder(@PathVariable Long userId,
                                                    @PathVariable Long petId,
                                                    @PathVariable Long id,
-                                                   @Valid @RequestBody String reminderJson) {
-        Reminder reminder = objectMapper.readValue(reminderJson, Reminder.class);
+                                                   @Valid @RequestBody Reminder reminder) {
         Reminder updated = reminderService.updateReminder(userId, petId, id, reminder);
         return ResponseEntity.ok(updated);
     }

@@ -32,7 +32,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        testUser = new User("João Silva", "joao@email.com", "senha123");
+        testUser = new User("João Silva", "joao@email.com", "12345678901", "São Paulo", "senha123");
         testUser.setId(1L);
     }
 
@@ -125,9 +125,9 @@ class UserServiceTest {
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
             userService.getUserByCpf("12345678901");
         });
-    }
         assertEquals("Usuário não encontrado: 12345678901", exception.getMessage());
     }
+
     @Test
     void getAllUsers_Success() {
         User user2 = new User("Maria Santos", "maria@email.com", "12345678902", "São Paulo", "senha456");
@@ -166,3 +166,4 @@ class UserServiceTest {
         assertDoesNotThrow(() -> userService.deleteUser(1L));
         verify(userRepository, times(1)).delete(testUser);
     }
+}

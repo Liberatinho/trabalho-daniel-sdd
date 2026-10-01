@@ -35,7 +35,7 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        testUser = new User("João Silva", "joao@email.com", "senha123");
+        testUser = new User("João Silva", "joao@email.com", "12345678901", "São Paulo", "senha123");
         testUser.setId(1L);
     }
 
@@ -50,7 +50,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.name").value("João Silva"))
                 .andExpect(jsonPath("$.cpf").value("12345678901"))
                 .andExpect(jsonPath("$.cidade").value("São Paulo"))
-                .andExpect(jsonPath("$.email").value("joao@email.com"));
+                .andExpect(jsonPath("$.email").value("joao@email.com"))
                 .andExpect(jsonPath("$.password").value("senha123"));
 
         verify(userService, times(1)).createUser(any(User.class));
@@ -93,7 +93,7 @@ class UserControllerTest {
 
     @Test
     void getAllUsers_Success() throws Exception {
-        User user2 = new User("Maria Santos", "maria@email.com", "senha456");
+        User user2 = new User("Maria Santos", "maria@email.com", "12345678902", "São Paulo", "senha456");
         user2.setId(2L);
 
         when(userService.getAllUsers()).thenReturn(Arrays.asList(testUser, user2));
@@ -105,7 +105,7 @@ class UserControllerTest {
 
     @Test
     void updateUser_Success() throws Exception {
-        User updatedUser = new User("João Silva Atualizado", "joao@email.com", "senha123");
+        User updatedUser = new User("João Silva Atualizado", "joao@email.com", "12345678901", "São Paulo", "senha123");
         updatedUser.setId(1L);
 
         when(userService.updateUser(eq(1L), any(User.class))).thenReturn(updatedUser);

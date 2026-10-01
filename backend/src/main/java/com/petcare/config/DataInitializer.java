@@ -43,8 +43,8 @@ public class DataInitializer implements CommandLineRunner {
             return;
         }
 
-        User maria = userService.createUser(new User("Maria Silva", "maria@email.com", "senha123"));
-        User joao = userService.createUser(new User("João Santos", "joao@email.com", "senha456"));
+        User maria = userService.createUser(new User("Maria Silva", "maria@email.com", "12345678901", "São Paulo", "senha123"));
+        User joao = userService.createUser(new User("João Santos", "joao@email.com", "12345678902", "São Paulo", "senha456"));
 
         Pet rex = petService.createPet(pet("Rex", "Cão", "Labrador", LocalDate.of(2020, 3, 12), "Muito dócil"), maria.getId());
         Pet mimi = petService.createPet(pet("Mimi", "Gato", "Siamês", LocalDate.of(2022, 8, 5), "Alergia a frango"), maria.getId());
