@@ -3,6 +3,7 @@ package com.petcare.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.petcare.exception.GlobalExceptionHandler;
 import com.petcare.model.Pet;
+import com.petcare.model.User;
 import com.petcare.service.PetService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,6 +45,8 @@ class PetControllerTest {
         pet.setBreed("Labrador");
         pet.setBirthDate(LocalDate.of(2020, 3, 12));
         pet.setNotes("Muito dócil");
+        User user = new User("Maria Silva", "maria@email.com", "12345678901", "São Paulo", "senha123");
+        user.addPet(pet);
     }
 
     @Test
