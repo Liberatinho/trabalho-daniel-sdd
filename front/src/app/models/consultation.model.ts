@@ -1,3 +1,5 @@
+import { Pet } from './pet.model';
+
 export enum ConsultationStatus {
   Scheduled = 'SCHEDULED',
   Completed = 'COMPLETED',
@@ -11,6 +13,11 @@ export interface Consultation {
   readonly reason: string;
   readonly notes?: string | null;
   readonly status: ConsultationStatus;
+}
+
+export interface ConsultationListItem {
+  readonly pet: Pet;
+  readonly consultation: Consultation;
 }
 
 export interface CreateConsultationRequest {
