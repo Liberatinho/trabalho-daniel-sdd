@@ -1,0 +1,44 @@
+.register {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.register__heading {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.register__heading p,
+.register__terms,
+.register__login {
+  color: var(--color-text-secondary);
+}
+
+.register__badge {
+  width: fit-content;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--color-brand-soft);
+  color: var(--color-brand-primary);
+  font-size: var(--font-size-caption);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.register__form {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.register__terms,
+.register__login {
+  font-size: var(--font-size-caption);
+}
+
+.register__login {
+  text-align: center;
+}
+
+.register__login a {
+  font-weight: 700;
+}

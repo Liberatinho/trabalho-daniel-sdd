@@ -1,0 +1,53 @@
+.pet-create {
+  display: grid;
+  gap: var(--space-8);
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+.pet-create__heading {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.pet-create__heading p {
+  color: var(--color-text-secondary);
+}
+
+.pet-create__eyebrow {
+  color: var(--color-brand-secondary);
+  font-size: var(--font-size-label);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.pet-create__form {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.pet-create__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.pet-create__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+@media (max-width: 40rem) {
+  .pet-create__fields {
+    grid-template-columns: 1fr;
+  }
+
+  .pet-create__actions {
+    flex-direction: column-reverse;
+  }
+
+  .pet-create__actions app-button {
+    width: 100%;
+  }
+}

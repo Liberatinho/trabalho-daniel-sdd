@@ -1,0 +1,24 @@
+.empty-state {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-6);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.empty-state__icon {
+  display: inline-grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--color-brand-soft);
+  color: var(--color-brand-secondary);
+  font-size: 2rem;
+}
+
+.empty-state h2 {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-heading-2);
+}

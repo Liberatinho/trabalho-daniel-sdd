@@ -1,0 +1,66 @@
+.vaccines-page {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.vaccines-page__heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.vaccines-page__heading > div {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.vaccines-page__heading p {
+  color: var(--color-text-secondary);
+}
+
+.vaccines-page__eyebrow {
+  color: var(--color-brand-secondary);
+  font-size: var(--font-size-label);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.vaccines-page__toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 16rem;
+  gap: var(--space-4);
+  align-items: end;
+}
+
+.vaccines-page__form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.vaccines-page__form-dates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.vaccines-page__modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+@media (max-width: 40rem) {
+  .vaccines-page__heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .vaccines-page__toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .vaccines-page__form-dates {
+    grid-template-columns: 1fr;
+  }
+}
