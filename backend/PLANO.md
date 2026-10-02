@@ -126,18 +126,18 @@ PetCare/
 - [X] Persistência de dados (H2 + JPA)
 - [X] Regras de negócio (6 regras identificadas)
 - [X] Validações (Bean Validation)
-- [ ] Aplicação funcional
-- [ ] Artefatos do cc-sdd preservados (brief, requirements, design, tasks)
-- [ ] Requirements documentados
-- [ ] Design documentado
+- [X] Aplicação funcional
+- [X] Artefatos do cc-sdd preservados (brief, requirements, design, tasks)
+- [X] Requirements documentados
+- [X] Design documentado
 - [X] Tasks documentadas
-- [ ] Testes e registros de verificação preservados
-- [ ] Histórico Git coerente com as tasks
-- [ ] Commits relacionados às tarefas/requisitos
-- [ ] Registro diário de demandas do grupo
-- [ ] Slides cobrindo os 6 tópicos
-- [ ] Demonstração da aplicação
-- [ ] Análise crítica
+- [X] Testes e registros de verificação preservados
+- [X] Histórico Git coerente com as tasks
+- [X] Commits relacionados às tarefas/requisitos
+- [X] Registro diário de demandas do grupo
+- [X] Slides cobrindo os 6 tópicos
+- [X] Demonstração da aplicação
+- [X] Análise crítica
 - [X] Link do repositório
 
 ## Estratégia de Commits
@@ -168,7 +168,7 @@ feat(reminders): implement reminder system [TASK-014]
 ## Riscos e Mitigações
 
 ### Risco 1: cc-sdd gerar código muito genérico
-**Mitigação:** Revisar e ajustar manualmente após `/kiro-impl`
+**Mitigação:** Revisar e ajustar manualmente após `/.cursor/specs/petcare`
 
 ### Risco 2: Tempo insuficiente para 2 semanas
 **Mitigação:** Focar no MVP (usuários, pets, vacinas, consultas) e deixar lembretes como bônus
