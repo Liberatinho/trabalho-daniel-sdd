@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 import { authGuard } from './core/routing/auth.guard';
-import { RoutePlaceholderComponent } from './core/routing/route-placeholder.component';
 import { AuthLayoutComponent } from './components/layouts/auth-layout/auth-layout.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
@@ -10,6 +9,7 @@ import { PetsComponent } from './pages/pets/pets.component';
 import { PetCreateComponent } from './pages/pet-create/pet-create.component';
 import { VaccinesComponent } from './pages/vaccines/vaccines.component';
 import { ConsultationsComponent } from './pages/consultations/consultations.component';
+import { RemindersComponent } from './pages/reminders/reminders.component';
 
 export const routes: Routes = [
   {
@@ -43,7 +43,7 @@ export const routes: Routes = [
       { path: 'pets', component: PetsComponent },
       { path: 'vaccines', component: VaccinesComponent },
       { path: 'consultations', component: ConsultationsComponent },
-      { path: 'reminders', component: RoutePlaceholderComponent }
+      { path: 'reminders', component: RemindersComponent }
     ]
   },
   { path: '**', redirectTo: 'login' }

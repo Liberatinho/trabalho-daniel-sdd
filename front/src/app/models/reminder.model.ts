@@ -1,3 +1,5 @@
+import type { Pet } from './pet.model';
+
 export enum ReminderType {
   Vaccine = 'VACCINE',
   Consultation = 'CONSULTATION',
@@ -11,6 +13,11 @@ export interface Reminder {
   readonly description: string;
   readonly dueDate: string;
   readonly completed: boolean;
+}
+
+export interface ReminderListItem {
+  readonly pet: Pet;
+  readonly reminder: Reminder;
 }
 
 export interface CreateReminderRequest {
