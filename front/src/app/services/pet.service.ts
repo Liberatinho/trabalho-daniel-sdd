@@ -6,7 +6,8 @@ import { catchError, finalize, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import {
   CreatePetRequest,
-  Pet
+  Pet,
+  UpdatePetRequest
 } from '../models/pet.model';
 import { ApiHttpError } from '../core/http/api-error';
 
@@ -35,6 +36,27 @@ export class PetService {
       pet => {
         this.pets.update(pets => [...pets, pet]);
         this.selectPet(pet);
+      }
+    );
+  }
+
+  updatePet(userId: number, petId: number, request: UpdatePetRequest): Observable<Pet> {
+    return this.request(
+      this.http.put<Pet>(`${this.petsUrl(userId)}/${petId}`, request),
+      updated => {
+        this.pets.update(pets => pets.map(pet => pet.id === petId ? updated : pet));
+        if (this.selectedPet()?.id === petId) this.selectedPet.set(updated);
+      }
+    );
+  }
+
+  deletePet(userId: number, petId: number): Observable<void> {
+    return this.request(
+      this.http.delete<void>(`${this.petsUrl(userId)}/${petId}`),
+      () => {
+        const remaining = this.pets().filter(pet => pet.id !== petId);
+        this.pets.set(remaining);
+        this.keepSelection(remaining);
       }
     );
   }

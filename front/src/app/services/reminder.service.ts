@@ -11,7 +11,8 @@ import {
   CreateReminderRequest,
   Reminder,
   ReminderListItem,
-  ReminderType
+  ReminderType,
+  UpdateReminderRequest
 } from '../models/reminder.model';
 
 @Injectable({ providedIn: 'root' })
@@ -67,6 +68,25 @@ export class ReminderService {
     return this.request(
       this.http.post<Reminder>(this.remindersUrl(userId, pet.id), request),
       reminder => this.items.update(items => [...items, { pet, reminder }])
+    );
+  }
+
+  updateReminder(userId: number, item: ReminderListItem, request: UpdateReminderRequest): Observable<Reminder> {
+    return this.request(
+      this.http.put<Reminder>(`${this.remindersUrl(userId, item.pet.id)}/${item.reminder.id}`, request),
+      reminder => this.items.update(items => items.map(current =>
+        current.pet.id === item.pet.id && current.reminder.id === item.reminder.id
+          ? { pet: item.pet, reminder } : current
+      ))
+    );
+  }
+
+  deleteReminder(userId: number, item: ReminderListItem): Observable<void> {
+    return this.request(
+      this.http.delete<void>(`${this.remindersUrl(userId, item.pet.id)}/${item.reminder.id}`),
+      () => this.items.update(items => items.filter(current =>
+        current.pet.id !== item.pet.id || current.reminder.id !== item.reminder.id
+      ))
     );
   }
 

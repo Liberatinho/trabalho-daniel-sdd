@@ -96,6 +96,43 @@ textarea:disabled {
   cursor: not-allowed;
 }
 
+.record-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.record-action {
+  min-height: 2.25rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-background-surface);
+  color: var(--color-brand-primary);
+  font-size: var(--font-size-label);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.record-action:hover:not(:disabled) {
+  border-color: var(--color-brand-secondary);
+  background: var(--color-brand-soft);
+}
+
+.record-action--danger {
+  color: var(--color-feedback-error);
+}
+
+.record-action--danger:hover:not(:disabled) {
+  border-color: var(--color-feedback-error);
+  background: #fff3f1;
+}
+
+.record-action:disabled {
+  opacity: 0.5;
+}
+
 :focus-visible {
   outline: 0;
   box-shadow: var(--focus-ring);

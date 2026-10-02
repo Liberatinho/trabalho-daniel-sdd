@@ -42,6 +42,15 @@
   color: var(--color-brand-secondary);
 }
 
+.button--danger {
+  background: var(--color-feedback-error);
+  color: var(--color-text-on-primary);
+}
+
+.button--danger:hover:not(:disabled) {
+  background: #963d3b;
+}
+
 .button:disabled {
   opacity: 0.58;
 }

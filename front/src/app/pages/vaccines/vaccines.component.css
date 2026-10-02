@@ -50,6 +50,13 @@
   gap: var(--space-3);
 }
 
+.vaccines-page__pet-label {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-brand-soft);
+  color: var(--color-text-secondary);
+}
+
 @media (max-width: 40rem) {
   .vaccines-page__heading {
     align-items: stretch;

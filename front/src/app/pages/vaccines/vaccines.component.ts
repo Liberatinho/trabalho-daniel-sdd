@@ -12,6 +12,7 @@ import { finalize } from 'rxjs';
 import { AlertComponent } from '../../components/ui/alert/alert.component';
 import { ButtonComponent } from '../../components/ui/button/button.component';
 import { CardComponent } from '../../components/ui/card/card.component';
+import { ConfirmDeleteComponent } from '../../components/ui/confirm-delete/confirm-delete.component';
 import { DateInputComponent } from '../../components/ui/date-input/date-input.component';
 import { EmptyStateComponent } from '../../components/ui/empty-state/empty-state.component';
 import { InputComponent } from '../../components/ui/input/input.component';
@@ -22,6 +23,7 @@ import { SelectComponent } from '../../components/ui/select/select.component';
 import { TableComponent } from '../../components/ui/table/table.component';
 import { TextareaComponent } from '../../components/ui/textarea/textarea.component';
 import { ApiHttpError } from '../../core/http/api-error';
+import { VaccineListItem } from '../../models/vaccine.model';
 import { AuthService } from '../../services/auth.service';
 import { PetService } from '../../services/pet.service';
 import { VaccineService } from '../../services/vaccine.service';
@@ -33,6 +35,7 @@ import { VaccineService } from '../../services/vaccine.service';
     AlertComponent,
     ButtonComponent,
     CardComponent,
+    ConfirmDeleteComponent,
     DateInputComponent,
     EmptyStateComponent,
     InputComponent,
@@ -81,7 +84,7 @@ import { VaccineService } from '../../services/vaccine.service';
       }
 
       @if (successMessage()) {
-        <app-alert variant="success" title="Vacina registrada" [message]="successMessage()" />
+        <app-alert variant="success" title="Histórico atualizado" [message]="successMessage()" />
       }
 
       @if (isBusy()) {
@@ -102,6 +105,7 @@ import { VaccineService } from '../../services/vaccine.service';
                   <th>Data de Aplicação</th>
                   <th>Próxima Dose</th>
                   <th>Observações</th>
+                  <th>Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -112,6 +116,10 @@ import { VaccineService } from '../../services/vaccine.service';
                     <td>{{ formatDate(item.vaccine.applicationDate) }}</td>
                     <td>{{ formatDate(item.vaccine.nextDoseDate) }}</td>
                     <td>{{ item.vaccine.notes || '—' }}</td>
+                    <td><div class="record-actions">
+                      <button class="record-action" type="button" (click)="openEditModal(item)" [attr.aria-label]="'Editar ' + item.vaccine.name">Editar</button>
+                      <button class="record-action record-action--danger" type="button" (click)="openDelete(item)" [attr.aria-label]="'Excluir ' + item.vaccine.name">Excluir</button>
+                    </div></td>
                   </tr>
                 }
               </tbody>
@@ -120,14 +128,18 @@ import { VaccineService } from '../../services/vaccine.service';
         </app-card>
       }
 
-      <app-modal [open]="isCreateModalOpen()" title="Registrar vacina"
-        description="Adicione uma vacina ao histórico de imunização do pet." (closed)="closeCreateModal()">
+      <app-modal [open]="isCreateModalOpen()" [title]="editingItem() ? 'Editar vacina' : 'Registrar vacina'"
+        [description]="editingItem() ? 'Atualize os dados da vacina.' : 'Adicione uma vacina ao histórico de imunização do pet.'" (closed)="closeCreateModal()">
         <form class="vaccines-page__form" [formGroup]="createForm" (ngSubmit)="submitCreate()" modal-content>
           @if (createErrorMessage()) {
-            <app-alert variant="error" title="Não foi possível registrar a vacina" [message]="createErrorMessage()" />
+            <app-alert variant="error" title="Não foi possível salvar a vacina" [message]="createErrorMessage()" />
           }
-          <app-select id="vaccine-pet" label="Pet" placeholder="Selecione o pet" [required]="true"
-            [options]="createPetOptions()" [error]="createFieldError('petId')" formControlName="petId" />
+          @if (editingItem(); as item) {
+            <p class="vaccines-page__pet-label">Pet: <strong>{{ item.pet.name }}</strong></p>
+          } @else {
+            <app-select id="vaccine-pet" label="Pet" placeholder="Selecione o pet" [required]="true"
+              [options]="createPetOptions()" [error]="createFieldError('petId')" formControlName="petId" />
+          }
           <app-input id="vaccine-name" label="Nome da vacina" placeholder="Ex.: Antirrábica" [required]="true"
             [error]="createFieldError('name')" formControlName="name" />
           <div class="vaccines-page__form-dates">
@@ -140,9 +152,14 @@ import { VaccineService } from '../../services/vaccine.service';
         </form>
         <div class="vaccines-page__modal-actions" modal-footer>
           <app-button variant="secondary" type="button" [disabled]="isSubmitting()" (click)="closeCreateModal()">Cancelar</app-button>
-          <app-button type="button" [loading]="isSubmitting()" (click)="submitCreate()">Salvar vacina</app-button>
+          <app-button type="button" [loading]="isSubmitting()" (click)="submitCreate()">{{ editingItem() ? 'Salvar alterações' : 'Salvar vacina' }}</app-button>
         </div>
       </app-modal>
+
+      <app-confirm-delete [open]="deletingItem() !== null" title="Excluir vacina?"
+        [message]="'A vacina ' + (deletingItem()?.vaccine?.name ?? '') + ' será removida do histórico.'"
+        [error]="deleteError()" [loading]="isDeleting()"
+        (canceled)="closeDelete()" (confirmed)="confirmDelete()" />
     </div>
   `,
   styleUrl: './vaccines.component.css',
@@ -160,6 +177,10 @@ export class VaccinesComponent implements OnInit {
   ]);
   readonly pets = signal<readonly import('../../models/pet.model').Pet[]>([]);
   readonly isCreateModalOpen = signal(false);
+  readonly editingItem = signal<VaccineListItem | null>(null);
+  readonly deletingItem = signal<VaccineListItem | null>(null);
+  readonly deleteError = signal('');
+  readonly isDeleting = signal(false);
   readonly isSubmitting = signal(false);
   readonly createErrorMessage = signal('');
   readonly successMessage = signal('');
@@ -227,6 +248,22 @@ export class VaccinesComponent implements OnInit {
   openCreateModal(): void {
     this.createErrorMessage.set('');
     this.successMessage.set('');
+    this.editingItem.set(null);
+    this.createForm.reset({ petId: '', name: '', applicationDate: '', nextDoseDate: '', notes: '' });
+    this.isCreateModalOpen.set(true);
+  }
+
+  openEditModal(item: VaccineListItem): void {
+    this.createErrorMessage.set('');
+    this.successMessage.set('');
+    this.editingItem.set(item);
+    this.createForm.reset({
+      petId: String(item.pet.id),
+      name: item.vaccine.name,
+      applicationDate: item.vaccine.applicationDate,
+      nextDoseDate: item.vaccine.nextDoseDate ?? '',
+      notes: item.vaccine.notes ?? ''
+    });
     this.isCreateModalOpen.set(true);
   }
 
@@ -248,20 +285,50 @@ export class VaccinesComponent implements OnInit {
       return;
     }
     this.isSubmitting.set(true);
-    this.vaccineService.createVaccine(userId, pet, {
+    const request = {
       name: values.name,
       applicationDate: values.applicationDate,
       ...(values.nextDoseDate ? { nextDoseDate: values.nextDoseDate } : {}),
       ...(values.notes ? { notes: values.notes } : {})
-    }).pipe(finalize(() => this.isSubmitting.set(false))).subscribe({
+    };
+    const editing = this.editingItem();
+    const action = editing
+      ? this.vaccineService.updateVaccine(userId, editing, request)
+      : this.vaccineService.createVaccine(userId, pet, request);
+    action.pipe(finalize(() => this.isSubmitting.set(false))).subscribe({
       next: () => {
         this.isCreateModalOpen.set(false);
+        this.editingItem.set(null);
         this.createForm.reset({ petId: '', name: '', applicationDate: '', nextDoseDate: '', notes: '' });
-        this.successMessage.set('O histórico de imunização foi atualizado.');
+        this.successMessage.set(editing ? 'A vacina foi atualizada.' : 'A vacina foi registrada.');
       },
       error: (error: unknown) => this.createErrorMessage.set(
-        error instanceof ApiHttpError ? error.message : 'Não foi possível registrar a vacina.'
+        error instanceof ApiHttpError ? error.message : 'Não foi possível salvar a vacina.'
       )
+    });
+  }
+
+  openDelete(item: VaccineListItem): void {
+    this.deleteError.set('');
+    this.successMessage.set('');
+    this.deletingItem.set(item);
+  }
+
+  closeDelete(): void {
+    if (!this.isDeleting()) this.deletingItem.set(null);
+  }
+
+  confirmDelete(): void {
+    const item = this.deletingItem();
+    const userId = this.authService.currentUser()?.id;
+    if (!item || userId === undefined) return;
+    this.isDeleting.set(true);
+    this.vaccineService.deleteVaccine(userId, item).pipe(finalize(() => this.isDeleting.set(false))).subscribe({
+      next: () => {
+        this.deletingItem.set(null);
+        this.successMessage.set('A vacina foi excluída.');
+      },
+      error: error => this.deleteError.set(error instanceof ApiHttpError ? error.message : 'Não foi possível excluir a vacina.')
     });
   }
 
