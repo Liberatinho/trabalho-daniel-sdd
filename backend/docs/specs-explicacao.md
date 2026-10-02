@@ -2,12 +2,12 @@
 
 ## Visão geral
 
-No cc-sdd, as **specs** são artefatos de documentação que vivem dentro de `.kiro/specs/`. Elas guiam o desenvolvimento do conceito ao código, garantindo rastreabilidade entre o que foi planejado e o que foi implementado.
+No cc-sdd, as **specs** são artefatos de documentação que vivem dentro de `.cursor/specs/`. Elas guiam o desenvolvimento do conceito ao código, garantindo rastreabilidade entre o que foi planejado e o que foi implementado.
 
 ## Estrutura de diretórios
 
 ```
-.kiro/
+.cursor/
 └── specs/
     └── petcare/
         ├── brief.md          # Visão geral do projeto
