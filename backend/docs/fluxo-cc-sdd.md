@@ -28,7 +28,7 @@ Discovery ──► Specification ──► Implementation ──► Verificatio
 4. Decidimos a stack: Spring Boot + H2
 5. Definimos o que está dentro e fora do escopo
 
-**Arquivo:** `.kiro/specs/petcare/brief.md` e `docs/discovery.md`
+**Arquivo:** `.cursor/specs/petcare/brief.md` e `docs/discovery.md`
 
 ## Fase 2: Specification
 
@@ -169,7 +169,7 @@ Conforme o guia cc-sdd, a entrega deve incluir:
 | Regras de negócio                 | Services, `docs/arquitetura.md`         |
 | Validações                        | Bean Validation + Services              |
 | Aplicação funcional               | `mvn spring-boot:run`                   |
-| Artefatos do cc-sdd              | `.kiro/specs/petcare/`                  |
+| Artefatos do cc-sdd              | `.cursor/specs/petcare/`                  |
 | Requirements documentados         | `requirements.md`                       |
 | Design documentado                | `design.md`                             |
 | Tasks documentadas                | `tasks.md`                              |
