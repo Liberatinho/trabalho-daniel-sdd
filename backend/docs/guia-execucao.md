@@ -163,7 +163,7 @@ PetCare/
 │   ├── rastreabilidade.md          # Matriz de rastreabilidade
 │   ├── guia-execucao.md            # Este arquivo
 │   └── fluxo-cc-sdd.md             # Fluxo cc-sdd aplicado
-├── .kiro/specs/petcare/            # Artefatos do cc-sdd
+├── .cursor/specs/petcare/            # Artefatos do cc-sdd
 │   ├── brief.md                    # Resumo do projeto
 │   ├── requirements.md             # Requisitos funcionais
 │   ├── design.md                   # Arquitetura e design
