@@ -5,7 +5,7 @@ import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { ApiHttpError } from '../core/http/api-error';
-import { Consultation, ConsultationListItem, CreateConsultationRequest } from '../models/consultation.model';
+import { Consultation, ConsultationListItem, CreateConsultationRequest, UpdateConsultationRequest } from '../models/consultation.model';
 import { ConsultationFilters } from '../models/filters.model';
 import { Pet } from '../models/pet.model';
 
@@ -51,6 +51,23 @@ export class ConsultationService {
   createConsultation(userId: number, pet: Pet, request: CreateConsultationRequest): Observable<Consultation> {
     return this.request(this.http.post<Consultation>(this.url(userId, pet.id), request), consultation => {
       this.items.update(items => [...items, { pet, consultation }]);
+    });
+  }
+
+  updateConsultation(userId: number, item: ConsultationListItem, request: UpdateConsultationRequest): Observable<Consultation> {
+    return this.request(this.http.put<Consultation>(`${this.url(userId, item.pet.id)}/${item.consultation.id}`, request), consultation => {
+      this.items.update(items => items.map(current =>
+        current.pet.id === item.pet.id && current.consultation.id === item.consultation.id
+          ? { pet: item.pet, consultation } : current
+      ));
+    });
+  }
+
+  deleteConsultation(userId: number, item: ConsultationListItem): Observable<void> {
+    return this.request(this.http.delete<void>(`${this.url(userId, item.pet.id)}/${item.consultation.id}`), () => {
+      this.items.update(items => items.filter(current =>
+        current.pet.id !== item.pet.id || current.consultation.id !== item.consultation.id
+      ));
     });
   }
 

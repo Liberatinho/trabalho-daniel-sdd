@@ -1,2 +1,64 @@
-.consultations-page { display:grid; gap:var(--space-8); } .consultations-page__heading { display:flex; align-items:end; justify-content:space-between; gap:var(--space-4); } .consultations-page__heading span { color:var(--color-brand-secondary); font-weight:800; text-transform:uppercase; } .consultations-page__heading p { color:var(--color-text-secondary); } .consultations-page__toolbar { display:grid; grid-template-columns:minmax(0,1fr) 14rem 14rem; gap:var(--space-4); align-items:end; } @media(max-width:48rem){.consultations-page__heading{align-items:stretch;flex-direction:column}.consultations-page__toolbar{grid-template-columns:1fr}}
-.consultations-page__form{display:grid;gap:var(--space-4)}.consultations-page__actions{display:flex;justify-content:flex-end;gap:var(--space-3)}
+.consultations-page {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.consultations-page__heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.consultations-page__heading > div {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.consultations-page__heading span {
+  color: var(--color-brand-secondary);
+  font-size: var(--font-size-label);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.consultations-page__heading p {
+  color: var(--color-text-secondary);
+}
+
+.consultations-page__toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 14rem 14rem;
+  gap: var(--space-4);
+  align-items: end;
+}
+
+.consultations-page__form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.consultations-page__pet-label {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-brand-soft);
+  color: var(--color-text-secondary);
+}
+
+.consultations-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+@media (max-width: 48rem) {
+  .consultations-page__heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .consultations-page__toolbar {
+    grid-template-columns: 1fr;
+  }
+}

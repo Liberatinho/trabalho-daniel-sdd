@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'text';
+export type ButtonVariant = 'primary' | 'secondary' | 'text' | 'danger';
 
 @Component({
   selector: 'app-button',
@@ -11,6 +11,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'text';
       [class.button--primary]="variant === 'primary'"
       [class.button--secondary]="variant === 'secondary'"
       [class.button--text]="variant === 'text'"
+      [class.button--danger]="variant === 'danger'"
       [disabled]="disabled || loading"
       [attr.type]="type"
       [attr.aria-busy]="loading"

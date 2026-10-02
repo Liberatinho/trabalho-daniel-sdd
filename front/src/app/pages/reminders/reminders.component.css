@@ -21,6 +21,17 @@
   color: var(--color-text-secondary);
 }
 
+.reminders-page__item-actions {
+  margin-top: var(--space-1);
+}
+
+.reminders-page__pet-label {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-brand-soft);
+  color: var(--color-text-secondary);
+}
+
 .reminders-page__form {
   display: grid;
   gap: var(--space-4);

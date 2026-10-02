@@ -10,7 +10,8 @@ import { Pet } from '../models/pet.model';
 import {
   CreateVaccineRequest,
   Vaccine,
-  VaccineListItem
+  VaccineListItem,
+  UpdateVaccineRequest
 } from '../models/vaccine.model';
 
 @Injectable({ providedIn: 'root' })
@@ -67,6 +68,25 @@ export class VaccineService {
       vaccine => {
         this.items.update(items => [...items, { pet, vaccine }]);
       }
+    );
+  }
+
+  updateVaccine(userId: number, item: VaccineListItem, request: UpdateVaccineRequest): Observable<Vaccine> {
+    return this.request(
+      this.http.put<Vaccine>(`${this.vaccinesUrl(userId, item.pet.id)}/${item.vaccine.id}`, request),
+      vaccine => this.items.update(items => items.map(current =>
+        current.pet.id === item.pet.id && current.vaccine.id === item.vaccine.id
+          ? { pet: item.pet, vaccine } : current
+      ))
+    );
+  }
+
+  deleteVaccine(userId: number, item: VaccineListItem): Observable<void> {
+    return this.request(
+      this.http.delete<void>(`${this.vaccinesUrl(userId, item.pet.id)}/${item.vaccine.id}`),
+      () => this.items.update(items => items.filter(current =>
+        current.pet.id !== item.pet.id || current.vaccine.id !== item.vaccine.id
+      ))
     );
   }
 

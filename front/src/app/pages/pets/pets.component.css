@@ -34,16 +34,14 @@
 
 .pet-card {
   position: relative;
-  display: flex;
-  align-items: center;
+  display: grid;
   gap: var(--space-4);
   min-width: 0;
-  padding: var(--space-5);
+  padding: var(--space-6);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-background-surface);
   color: var(--color-text-primary);
-  text-align: left;
   box-shadow: var(--shadow-soft);
 }
 
@@ -55,6 +53,27 @@
 .pet-card--selected {
   background: var(--color-brand-soft);
 }
+
+.pet-card__select {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  min-height: 4rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+.pet-card__actions {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.pets-page__form { display: grid; gap: var(--space-4); }
+.pets-page__modal-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-3); }
 
 .pet-card__copy {
   display: grid;

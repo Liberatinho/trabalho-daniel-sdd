@@ -6,6 +6,7 @@ import { AlertComponent } from '../../components/ui/alert/alert.component';
 import { BadgeComponent } from '../../components/ui/badge/badge.component';
 import { ButtonComponent } from '../../components/ui/button/button.component';
 import { CardComponent } from '../../components/ui/card/card.component';
+import { ConfirmDeleteComponent } from '../../components/ui/confirm-delete/confirm-delete.component';
 import { DateInputComponent } from '../../components/ui/date-input/date-input.component';
 import { EmptyStateComponent } from '../../components/ui/empty-state/empty-state.component';
 import { InputComponent } from '../../components/ui/input/input.component';
@@ -34,6 +35,7 @@ interface ReminderGroup {
     BadgeComponent,
     ButtonComponent,
     CardComponent,
+    ConfirmDeleteComponent,
     DateInputComponent,
     EmptyStateComponent,
     InputComponent,
@@ -72,7 +74,7 @@ interface ReminderGroup {
       }
 
       @if (successMessage()) {
-        <app-alert title="Lembrete criado" variant="success" [message]="successMessage()" />
+        <app-alert title="Lembretes atualizados" variant="success" [message]="successMessage()" />
       }
 
       @if (isBusy()) {
@@ -98,6 +100,10 @@ interface ReminderGroup {
                           </app-badge>
                           <span>Data limite: {{ formatDate(item.reminder.dueDate) }}</span>
                         </div>
+                        <div class="record-actions reminders-page__item-actions">
+                          <button class="record-action" type="button" (click)="openEditModal(item)" [attr.aria-label]="'Editar ' + item.reminder.description">Editar</button>
+                          <button class="record-action record-action--danger" type="button" (click)="openDelete(item)" [attr.aria-label]="'Excluir ' + item.reminder.description">Excluir</button>
+                        </div>
                       </li>
                     }
                   </ul>
@@ -110,23 +116,20 @@ interface ReminderGroup {
 
       <app-modal
         [open]="isCreateModalOpen()"
-        title="Criar novo lembrete"
-        description="Registre um cuidado importante para um dos seus pets."
+        [title]="editingItem() ? 'Editar lembrete' : 'Criar novo lembrete'"
+        [description]="editingItem() ? 'Atualize os dados e o status do lembrete.' : 'Registre um cuidado importante para um dos seus pets.'"
         (closed)="closeCreateModal()"
       >
         <form class="reminders-page__form" [formGroup]="createForm" modal-content>
           @if (createErrorMessage()) {
-            <app-alert title="Não foi possível criar o lembrete" variant="error" [message]="createErrorMessage()" />
+            <app-alert title="Não foi possível salvar o lembrete" variant="error" [message]="createErrorMessage()" />
           }
-          <app-select
-            id="reminder-pet"
-            label="Pet"
-            placeholder="Selecione o pet"
-            [required]="true"
-            [options]="createPetOptions()"
-            [error]="createFieldError('petId')"
-            formControlName="petId"
-          />
+          @if (editingItem(); as item) {
+            <p class="reminders-page__pet-label">Pet: <strong>{{ item.pet.name }}</strong></p>
+          } @else {
+            <app-select id="reminder-pet" label="Pet" placeholder="Selecione o pet"
+              [required]="true" [options]="createPetOptions()" [error]="createFieldError('petId')" formControlName="petId" />
+          }
           <app-select
             id="reminder-type"
             label="Categoria"
@@ -151,12 +154,20 @@ interface ReminderGroup {
             [error]="createFieldError('dueDate')"
             formControlName="dueDate"
           />
+          @if (editingItem()) {
+            <app-select id="reminder-completed" label="Status" [options]="editCompletedOptions" [formControl]="completedControl" />
+          }
         </form>
         <div class="reminders-page__modal-actions" modal-footer>
           <app-button variant="secondary" type="button" [disabled]="isSubmitting()" (click)="closeCreateModal()">Cancelar</app-button>
-          <app-button type="button" [loading]="isSubmitting()" (click)="submitCreate()">Criar lembrete</app-button>
+          <app-button type="button" [loading]="isSubmitting()" (click)="submitCreate()">{{ editingItem() ? 'Salvar alterações' : 'Criar lembrete' }}</app-button>
         </div>
       </app-modal>
+
+      <app-confirm-delete [open]="deletingItem() !== null" title="Excluir lembrete?"
+        [message]="'O lembrete ' + (deletingItem()?.reminder?.description ?? '') + ' será removido.'"
+        [error]="deleteError()" [loading]="isDeleting()"
+        (canceled)="closeDelete()" (confirmed)="confirmDelete()" />
     </div>
   `,
   styleUrl: './reminders.component.css',
@@ -174,6 +185,10 @@ export class RemindersComponent implements OnInit {
   readonly errorMessage = signal('');
   readonly successMessage = signal('');
   readonly isCreateModalOpen = signal(false);
+  readonly editingItem = signal<ReminderListItem | null>(null);
+  readonly deletingItem = signal<ReminderListItem | null>(null);
+  readonly deleteError = signal('');
+  readonly isDeleting = signal(false);
   readonly isSubmitting = signal(false);
   readonly createErrorMessage = signal('');
   readonly petOptions = signal<readonly { value: string; label: string }[]>([
@@ -192,6 +207,11 @@ export class RemindersComponent implements OnInit {
     { value: 'true', label: 'Concluídos' }
   ];
   readonly createTypeOptions = this.typeOptions.slice(1);
+  readonly editCompletedOptions = [
+    { value: 'false', label: 'Pendente' },
+    { value: 'true', label: 'Concluído' }
+  ];
+  readonly completedControl = new FormControl('false', { nonNullable: true });
   readonly createForm = new FormGroup({
     petId: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     type: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -270,6 +290,23 @@ export class RemindersComponent implements OnInit {
   openCreateModal(): void {
     this.createErrorMessage.set('');
     this.successMessage.set('');
+    this.editingItem.set(null);
+    this.createForm.reset({ petId: '', type: '', description: '', dueDate: '' });
+    this.completedControl.setValue('false');
+    this.isCreateModalOpen.set(true);
+  }
+
+  openEditModal(item: ReminderListItem): void {
+    this.createErrorMessage.set('');
+    this.successMessage.set('');
+    this.editingItem.set(item);
+    this.createForm.reset({
+      petId: String(item.pet.id),
+      type: item.reminder.type,
+      description: item.reminder.description,
+      dueDate: item.reminder.dueDate
+    });
+    this.completedControl.setValue(String(item.reminder.completed));
     this.isCreateModalOpen.set(true);
   }
 
@@ -295,23 +332,48 @@ export class RemindersComponent implements OnInit {
     }
 
     this.isSubmitting.set(true);
-    this.reminderService
-      .createReminder(userId, pet, {
-        type: values.type as ReminderType,
-        description: values.description,
-        dueDate: values.dueDate
-      })
+    const request = { type: values.type as ReminderType, description: values.description, dueDate: values.dueDate };
+    const editing = this.editingItem();
+    const action = editing
+      ? this.reminderService.updateReminder(userId, editing, { ...request, completed: this.completedControl.value === 'true' })
+      : this.reminderService.createReminder(userId, pet, request);
+    action
       .pipe(finalize(() => this.isSubmitting.set(false)))
       .subscribe({
         next: () => {
           this.createForm.reset({ petId: '', type: '', description: '', dueDate: '' });
           this.isCreateModalOpen.set(false);
-          this.successMessage.set('O lembrete foi adicionado à central de cuidados.');
+          this.editingItem.set(null);
+          this.successMessage.set(editing ? 'O lembrete foi atualizado.' : 'O lembrete foi adicionado à central de cuidados.');
         },
         error: error => this.createErrorMessage.set(
-          error instanceof ApiHttpError ? error.message : 'Não foi possível criar o lembrete.'
+          error instanceof ApiHttpError ? error.message : 'Não foi possível salvar o lembrete.'
         )
       });
+  }
+
+  openDelete(item: ReminderListItem): void {
+    this.deleteError.set('');
+    this.successMessage.set('');
+    this.deletingItem.set(item);
+  }
+
+  closeDelete(): void {
+    if (!this.isDeleting()) this.deletingItem.set(null);
+  }
+
+  confirmDelete(): void {
+    const item = this.deletingItem();
+    const userId = this.authService.currentUser()?.id;
+    if (!item || userId === undefined) return;
+    this.isDeleting.set(true);
+    this.reminderService.deleteReminder(userId, item).pipe(finalize(() => this.isDeleting.set(false))).subscribe({
+      next: () => {
+        this.deletingItem.set(null);
+        this.successMessage.set('O lembrete foi excluído.');
+      },
+      error: error => this.deleteError.set(error instanceof ApiHttpError ? error.message : 'Não foi possível excluir o lembrete.')
+    });
   }
 
   createFieldError(field: 'petId' | 'type' | 'description' | 'dueDate'): string {
